@@ -4,6 +4,7 @@ import z from "zod";
 export const serverEnv = createEnv({
   server: {
     CLERK_SECRET_KEY: z.string().nonempty(),
+    DATABASE_URL: z.string().nonempty(),
   },
   experimental__runtimeEnv: true,
   emptyStringAsUndefined: true,
