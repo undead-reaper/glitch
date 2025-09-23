@@ -1,0 +1,1 @@
+export const STUDIO_DEFAULT_VIDEO_LIMIT = 5;

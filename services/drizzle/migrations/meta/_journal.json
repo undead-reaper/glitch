@@ -15,6 +15,13 @@
       "when": 1758661102945,
       "tag": "0001_medical_red_skull",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1758665809746,
+      "tag": "0002_crazy_dust",
+      "breakpoints": true
     }
   ]
 }

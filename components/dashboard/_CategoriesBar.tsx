@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import {
   Carousel,
   CarouselApi,
@@ -9,7 +10,6 @@ import {
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Badge } from "../ui/badge";
 
 type Props = Readonly<{
   value?: string | null;
