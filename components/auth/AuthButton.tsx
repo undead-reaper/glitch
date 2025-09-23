@@ -1,12 +1,34 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { UserCircle } from "lucide-react";
+import { Clapperboard, UserCircle, Video } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const AuthButton = () => {
+  const pathname = usePathname();
+  const isStudio = pathname.startsWith("/studio");
+
   return (
     <>
       <SignedIn>
-        <UserButton />
+        <UserButton>
+          <UserButton.MenuItems>
+            {isStudio ? (
+              <UserButton.Link
+                label="Glitch"
+                href="/"
+                labelIcon={<Video className="size-4" />}
+              />
+            ) : (
+              <UserButton.Link
+                label="Glitch Studio"
+                href="/studio"
+                labelIcon={<Clapperboard className="size-4" />}
+              />
+            )}
+          </UserButton.MenuItems>
+        </UserButton>
       </SignedIn>
       <SignedOut>
         <SignInButton>

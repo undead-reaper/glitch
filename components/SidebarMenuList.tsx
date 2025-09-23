@@ -9,16 +9,20 @@ import Link from "next/link";
 
 type Props = Readonly<{
   items: SidebarItem[];
+  activeUrl: string;
 }>;
 
-const SidebarMenuList = ({ items }: Props) => {
-
-
+const SidebarMenuList = ({ items, activeUrl }: Props) => {
   return (
     <SidebarMenu>
       {items.map((item) => (
         <SidebarMenuItem key={item.label}>
-          <SidebarMenuButton className="px-3" tooltip={item.label} asChild>
+          <SidebarMenuButton
+            isActive={activeUrl === item.href}
+            className="px-3"
+            tooltip={item.label}
+            asChild
+          >
             <Link href={item.href as Route}>
               <item.icon />
               <span>{item.label}</span>
