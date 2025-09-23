@@ -1,3 +1,5 @@
+import { ClerkProvider } from "@clerk/nextjs";
+import { shadcn } from "@clerk/themes";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { Fira_Code, Outfit } from "next/font/google";
@@ -25,10 +27,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${outfit.variable} ${firaCode.variable} antialiased`}>
-        <ThemeProvider attribute="class">{children}</ThemeProvider>
-      </body>
-    </html>
+    <ClerkProvider appearance={{ theme: shadcn }}>
+      <html lang="en" suppressHydrationWarning>
+        <body className={`${outfit.variable} ${firaCode.variable} antialiased`}>
+          <ThemeProvider attribute="class">{children}</ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
