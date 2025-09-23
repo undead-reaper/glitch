@@ -1,3 +1,4 @@
+import { TRPCProvider } from "@/services/trpc/client";
 import { ClerkProvider } from "@clerk/nextjs";
 import { shadcn } from "@clerk/themes";
 import type { Metadata } from "next";
@@ -30,7 +31,9 @@ export default function RootLayout({
     <ClerkProvider appearance={{ theme: shadcn }}>
       <html lang="en" suppressHydrationWarning>
         <body className={`${outfit.variable} ${firaCode.variable} antialiased`}>
-          <ThemeProvider attribute="class">{children}</ThemeProvider>
+          <ThemeProvider attribute="class">
+            <TRPCProvider>{children}</TRPCProvider>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
