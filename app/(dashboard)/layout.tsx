@@ -12,7 +12,7 @@ const DashboardLayout = ({ children }: Props) => {
     <SidebarProvider>
       <div className="w-full">
         <DashboardNavbar />
-        <div className="flex min-h-screen p-14">
+        <div className="flex min-h-screen pt-14 px-5">
           <DashboardSidebar />
           <main className="flex-1 overflow-y-auto">{children}</main>
         </div>
