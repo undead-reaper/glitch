@@ -1,0 +1,41 @@
+import { formatDuration } from "@/lib/utils";
+import Image from "next/image";
+
+type VideoThumbnailProps = Readonly<{
+  imageUrl?: string | null;
+  previewUrl?: string | null;
+  title: string;
+  duration: number;
+}>;
+
+const VideoThumbnail = ({
+  imageUrl,
+  previewUrl,
+  title,
+  duration,
+}: VideoThumbnailProps) => {
+  return (
+    <div className="relative group">
+      <div className="relative w-full overflow-hidden rounded-xl aspect-video">
+        <Image
+          src={imageUrl ?? "/placeholder-thumbnail.svg"}
+          alt={title}
+          fill
+          className="h-full w-full object-cover group-hover:opacity-0 duration-300 transition-opacity"
+        />
+        <Image
+          src={previewUrl ?? "/placeholder-thumbnail.svg"}
+          alt={title}
+          unoptimized
+          fill
+          className="h-full w-full object-cover opacity-0 group-hover:opacity-100 duration-300 transition-opacity"
+        />
+      </div>
+      <div className="absolute bottom-2 right-2 px-1 py-0.5 rounded bg-black/80 text-white text-xs font-medium">
+        {formatDuration(duration)}
+      </div>
+    </div>
+  );
+};
+
+export default VideoThumbnail;

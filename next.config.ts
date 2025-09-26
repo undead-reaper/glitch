@@ -10,6 +10,16 @@ const nextConfig: NextConfig = {
   },
   typedRoutes: true,
   allowedDevOrigins: ["http://localhost:3000"],
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "image.mux.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
