@@ -5,6 +5,7 @@ import StudioUploader from "@/components/studio/StudioUploader";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/services/trpc/client";
 import { Loader2, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 const StudioUploadButton = () => {
   const utils = trpc.useUtils();
@@ -31,6 +32,9 @@ const StudioUploadButton = () => {
             onSuccess={() => {
               utils.studio.getMany.invalidate();
               upload.reset();
+              toast.success("Video Uploaded Successfully", {
+                description: "You can find it in your content library.",
+              });
             }}
           />
         ) : (

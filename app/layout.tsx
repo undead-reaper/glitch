@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/sonner";
 import { TRPCProvider } from "@/services/trpc/client";
 import { ClerkProvider } from "@clerk/nextjs";
 import { shadcn } from "@clerk/themes";
@@ -32,7 +33,10 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body className={`${outfit.variable} ${firaCode.variable} antialiased`}>
           <ThemeProvider attribute="class">
-            <TRPCProvider>{children}</TRPCProvider>
+            <TRPCProvider>
+              <Toaster richColors duration={2000} />
+              {children}
+            </TRPCProvider>
           </ThemeProvider>
         </body>
       </html>

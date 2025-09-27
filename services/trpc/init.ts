@@ -28,7 +28,7 @@ export const protectedProcedure = t.procedure.use(
     if (!ctx.clerkUserId) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "User is not authenticated",
+        message: `User is not authenticated: ${ctx.clerkUserId}`,
       });
     }
 

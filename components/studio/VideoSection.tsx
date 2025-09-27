@@ -135,7 +135,7 @@ const VideosSectionSuspense = () => {
                         />
                       </div>
                       <div className="flex flex-col overflow-hidden">
-                        <span className="text-sm line-clamp-1">
+                        <span className="text-sm line-clamp-1 truncate w-[31.875rem]">
                           {video.title}
                         </span>
                         <span className="text-xs text-muted-foreground line-clamp-1">
