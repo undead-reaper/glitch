@@ -1,3 +1,4 @@
+import { THUMBNAIL_PLACEHOLDER } from "@/constants/globals";
 import { formatDuration } from "@/lib/utils";
 import Image from "next/image";
 
@@ -18,13 +19,13 @@ const VideoThumbnail = ({
     <div className="relative group">
       <div className="relative w-full overflow-hidden rounded-xl aspect-video">
         <Image
-          src={imageUrl ?? "/placeholder-thumbnail.svg"}
+          src={imageUrl || THUMBNAIL_PLACEHOLDER}
           alt={title}
           fill
           className="h-full w-full object-cover group-hover:opacity-0 duration-300 transition-opacity"
         />
         <Image
-          src={previewUrl ?? "/placeholder-thumbnail.svg"}
+          src={previewUrl || THUMBNAIL_PLACEHOLDER}
           alt={title}
           unoptimized
           fill

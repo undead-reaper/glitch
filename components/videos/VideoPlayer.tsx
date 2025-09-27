@@ -1,3 +1,4 @@
+import { THUMBNAIL_PLACEHOLDER } from "@/constants/globals";
 import MuxPlayer from "@mux/mux-player-react";
 
 type Props = Readonly<{
@@ -13,7 +14,7 @@ const VideoPlayer = ({ playbackId, thumbnailUrl, autoPlay, onPlay }: Props) => {
   return (
     <MuxPlayer
       playbackId={playbackId}
-      poster={thumbnailUrl ?? "/thumbnail-thumbnail.svg"}
+      poster={thumbnailUrl || THUMBNAIL_PLACEHOLDER}
       playerInitTime={0}
       autoPlay={autoPlay}
       thumbnailTime={0}

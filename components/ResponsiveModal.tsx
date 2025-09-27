@@ -30,7 +30,7 @@ const ResponsiveModal = ({ children, onOpenChange, open, title }: Props) => {
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent>
+        <DrawerContent className="pb-8">
           <DrawerHeader>
             <DrawerTitle>{title}</DrawerTitle>
             <DrawerDescription />

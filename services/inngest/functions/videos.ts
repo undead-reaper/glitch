@@ -5,6 +5,7 @@ import { inngest } from "@/services/inngest";
 import { mux } from "@/services/mux";
 import { eq } from "drizzle-orm";
 import { NonRetriableError } from "inngest";
+import { UTApi } from "uploadthing/server";
 
 function verifyWebhook({
   raw,
@@ -77,9 +78,21 @@ export const videoAssetReady = inngest.createFunction(
         throw new NonRetriableError("Missing Upload ID");
       }
 
-      const thumbnailUrl = `https://image.mux.com/${playbackId}/thumbnail.webp?fit_mode=smartcrop`;
-      const previewUrl = `https://image.mux.com/${playbackId}/animated.gif?width=640&height=360&fit_mode=smartcrop`;
+      const tempThumbnailUrl = `https://image.mux.com/${playbackId}/thumbnail.webp?fit_mode=smartcrop`;
+      const tempPreviewUrl = `https://image.mux.com/${playbackId}/animated.gif?width=640&height=360&fit_mode=smartcrop`;
       const updatedDuration = duration ? Math.round(duration * 1000) : 0;
+
+      const utApi = new UTApi();
+      const [uploadedThumbnail, uploadedPreview] =
+        await utApi.uploadFilesFromUrl([tempThumbnailUrl, tempPreviewUrl]);
+
+      if (!uploadedThumbnail.data || !uploadedPreview.data) {
+        throw new NonRetriableError("Failed to upload thumbnail or preview");
+      }
+
+      const { ufsUrl: thumbnailUrl, key: thumbnailKey } =
+        uploadedThumbnail.data;
+      const { ufsUrl: previewUrl, key: previewKey } = uploadedPreview.data;
 
       await db
         .update(videos)
@@ -88,7 +101,9 @@ export const videoAssetReady = inngest.createFunction(
           muxPlaybackId: playbackId,
           muxAssetId: id,
           thumbnailUrl,
+          thumbnailKey,
           previewUrl,
+          previewKey,
           duration: updatedDuration,
         })
         .where(eq(videos.muxUploadId, upload_id));
@@ -151,7 +166,23 @@ export const videoAssetDeleted = inngest.createFunction(
       if (!upload_id) {
         throw new NonRetriableError("Missing Upload ID");
       }
+      const [existingVideo] = await db
+        .select({
+          thumbnailKey: videos.thumbnailKey,
+          previewKey: videos.previewKey,
+        })
+        .from(videos)
+        .where(eq(videos.muxUploadId, upload_id));
 
+      if (
+        existingVideo.thumbnailKey !== null &&
+        existingVideo.previewKey !== null
+      ) {
+        await new UTApi().deleteFiles([
+          existingVideo.thumbnailKey,
+          existingVideo.previewKey,
+        ]);
+      }
       await db.delete(videos).where(eq(videos.muxUploadId, upload_id));
     });
   }

@@ -4,6 +4,7 @@ import { mux } from "@/services/mux";
 import { createTRPCRouter, protectedProcedure } from "@/services/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
+import { UTApi } from "uploadthing/server";
 import z from "zod";
 
 export const videosRouter = createTRPCRouter({
@@ -71,7 +72,14 @@ export const videosRouter = createTRPCRouter({
         .delete(videos)
         .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
         .returning();
+
       await mux.video.assets.delete(deletedVideo.muxAssetId!);
+      if (deletedVideo.thumbnailKey || deletedVideo.previewKey) {
+        await new UTApi().deleteFiles([
+          deletedVideo.thumbnailKey!,
+          deletedVideo.previewKey!,
+        ]);
+      }
       if (!deletedVideo) {
         throw new TRPCError({
           code: "NOT_FOUND",
@@ -80,5 +88,62 @@ export const videosRouter = createTRPCRouter({
         });
       }
       return deletedVideo;
+    }),
+
+  restoreThumbnail: protectedProcedure
+    .input(z.object({ id: z.nanoid() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id: userId } = ctx.user;
+
+      const [existingVideo] = await db
+        .select()
+        .from(videos)
+        .where(and(eq(videos.id, input.id), eq(videos.userId, userId)));
+
+      if (!existingVideo) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Video not found or you do not have permission to edit it.",
+        });
+      } else if (!existingVideo.muxPlaybackId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Video does not have a valid playback ID.",
+        });
+      }
+
+      const utApi = new UTApi();
+      if (existingVideo.thumbnailKey) {
+        await utApi.deleteFiles(existingVideo.thumbnailKey);
+        await db
+          .update(videos)
+          .set({ thumbnailKey: null, thumbnailUrl: null })
+          .where(and(eq(videos.id, input.id), eq(videos.userId, userId)));
+      }
+
+      const tempThumbnailUrl = `https://image.mux.com/${existingVideo.muxPlaybackId}/thumbnail.webp?fit_mode=smartcrop`;
+
+      const uploadedThumbnail = await utApi.uploadFilesFromUrl(
+        tempThumbnailUrl
+      );
+
+      if (!uploadedThumbnail.data) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to upload thumbnail",
+        });
+      }
+
+      const { key: thumbnailKey, ufsUrl: thumbnailUrl } =
+        uploadedThumbnail.data;
+
+      return await db
+        .update(videos)
+        .set({
+          thumbnailUrl,
+          thumbnailKey,
+        })
+        .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
+        .returning();
     }),
 });
