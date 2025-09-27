@@ -11,11 +11,13 @@
     "drizzle:migrate": "drizzle-kit migrate",
     "drizzle:push": "drizzle-kit push",
     "drizzle:studio": "drizzle-kit studio",
-    "inngest:dev": "inngest-cli dev"
+    "inngest:dev": "inngest-cli dev",
+    "upstash:qstash": "pnpx @upstash/qstash-cli dev --port 2025"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.32.2",
     "@clerk/themes": "^2.4.21",
+    "@google/genai": "^1.21.0",
     "@hookform/resolvers": "^5.2.2",
     "@mux/mux-node": "^12.8.0",
     "@mux/mux-player-react": "^3.6.0",
@@ -69,6 +71,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@upstash/workflow": "^0.2.20",
     "drizzle-kit": "^0.31.4",
     "eslint": "^9",
     "eslint-config-next": "15.6.0-canary.21",

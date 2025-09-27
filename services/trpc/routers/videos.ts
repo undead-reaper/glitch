@@ -1,7 +1,9 @@
+import { clientEnv } from "@/env/env.client";
 import { db } from "@/services/drizzle";
 import { videos, videoUpdateSchema } from "@/services/drizzle/schema/videos";
 import { mux } from "@/services/mux";
 import { createTRPCRouter, protectedProcedure } from "@/services/trpc/init";
+import { qstash } from "@/services/upstash/qstash";
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
 import { UTApi } from "uploadthing/server";
@@ -145,5 +147,27 @@ export const videosRouter = createTRPCRouter({
         })
         .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
         .returning();
+    }),
+
+  generateTitle: protectedProcedure
+    .input(z.object({ id: z.nanoid() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id: userId } = ctx.user;
+      const { workflowRunId } = await qstash.trigger({
+        url: `${clientEnv.NEXT_PUBLIC_BASE_URL}/api/workflows/title`,
+        body: { userId, videoId: input.id },
+      });
+      return { workflowRunId };
+    }),
+
+  generateDescription: protectedProcedure
+    .input(z.object({ id: z.nanoid() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id: userId } = ctx.user;
+      const { workflowRunId } = await qstash.trigger({
+        url: `${clientEnv.NEXT_PUBLIC_BASE_URL}/api/workflows/description`,
+        body: { userId, videoId: input.id },
+      });
+      return { workflowRunId };
     }),
 });

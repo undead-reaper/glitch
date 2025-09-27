@@ -24,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import VideoPlayer from "@/components/videos/VideoPlayer";
 import { THUMBNAIL_PLACEHOLDER } from "@/constants/globals";
@@ -37,10 +38,12 @@ import {
   CopyCheck,
   Globe,
   ImagePlus,
+  Loader2,
   Lock,
   Link as LucideLink,
   MoreVertical,
   RotateCcw,
+  Sparkles,
   Trash,
 } from "lucide-react";
 import { Route } from "next";
@@ -68,7 +71,60 @@ export const VideoDetailsFormSection = ({ videoId }: Props) => {
 };
 
 const VideoDetailsFormSectionSkeleton = () => {
-  return <div>Loading video details...</div>;
+  return (
+    <div className="animate-pulse">
+      <div className="flex items-center justify-between mb-6">
+        <div className="space-y-2">
+          <Skeleton className="h-7 w-32 bg-muted" />
+          <Skeleton className="h-4 w-40 bg-muted" />
+        </div>
+        <Skeleton className="h-9 w-24 bg-muted" />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-5">
+        <div className="space-y-8 lg:col-span-3">
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-16 bg-muted" />
+            <Skeleton className="h-10 w-full bg-muted" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-24 bg-muted" />
+            <Skeleton className="h-[13.75rem] w-full bg-muted" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-20 bg-muted" />
+            <Skeleton className="h-[5.25rem] w-[9.563rem] bg-muted" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-20 bg-muted" />
+            <Skeleton className="h-10 w-full bg-muted" />
+          </div>
+        </div>
+        <div className="flex flex-col gap-y-8 lg:col-span-2">
+          <div className="flex flex-col gap-4 bg-muted rounded-xl overflow-hidden">
+            <Skeleton className="aspect-video bg-background" />
+            <div className="px-4 py-4 space-y-6">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-20 bg-background" />
+                <Skeleton className="h-5 w-full bg-background" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-24 bg-background" />
+                <Skeleton className="h-5 w-32 bg-background" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-24 bg-background" />
+                <Skeleton className="h-5 w-32 bg-background" />
+              </div>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-20 bg-muted" />
+            <Skeleton className="h-10 w-full bg-muted" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 const VideoDetailsFormSectionSuspense = ({ videoId }: Props) => {
@@ -87,6 +143,30 @@ const VideoDetailsFormSectionSuspense = ({ videoId }: Props) => {
       toast.success("Video Updated Successfully", {
         description: "Your video details have been updated.",
       });
+    },
+  });
+
+  const generateTitle = trpc.videos.generateTitle.useMutation({
+    onSuccess: () => {
+      toast.success("Title Generation Started", {
+        description: "The video title is being generated.",
+      });
+    },
+    onSettled: () => {
+      utils.studio.getOne.invalidate({ id: videoId });
+      utils.studio.getMany.invalidate();
+    },
+  });
+
+  const generateDescription = trpc.videos.generateDescription.useMutation({
+    onSuccess: () => {
+      toast.success("Description Generation Started", {
+        description: "The video description is being generated.",
+      });
+    },
+    onSettled: () => {
+      utils.studio.getOne.invalidate({ id: videoId });
+      utils.studio.getMany.invalidate();
     },
   });
 
@@ -141,7 +221,11 @@ const VideoDetailsFormSectionSuspense = ({ videoId }: Props) => {
     });
   };
 
-  const isPending = update.isPending || restoreThumbnail.isPending;
+  const isPending =
+    update.isPending ||
+    restoreThumbnail.isPending ||
+    generateTitle.isPending ||
+    generateDescription.isPending;
 
   return (
     <>
@@ -162,7 +246,7 @@ const VideoDetailsFormSectionSuspense = ({ videoId }: Props) => {
             <div className="flex items-center gap-x-2">
               <Button
                 type="submit"
-                disabled={isPending}
+                disabled={isPending || !form.formState.isDirty}
                 className="cursor-pointer"
               >
                 Save
@@ -189,7 +273,7 @@ const VideoDetailsFormSectionSuspense = ({ videoId }: Props) => {
               </DropdownMenu>
             </div>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-5">
             <div className="space-y-8 lg:col-span-3">
               <FormField
                 control={form.control}
@@ -197,7 +281,25 @@ const VideoDetailsFormSectionSuspense = ({ videoId }: Props) => {
                 disabled={isPending}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Title</FormLabel>
+                    <FormLabel>
+                      <div className="flex items-center gap-x-2">
+                        <span>Title</span>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          type="button"
+                          className="rounded-full size-6 cursor-pointer"
+                          onClick={() => generateTitle.mutate({ id: videoId })}
+                          disabled={isPending || !video.muxTrackId}
+                        >
+                          {generateTitle.isPending ? (
+                            <Loader2 className="animate-spin size-3" />
+                          ) : (
+                            <Sparkles className="size-3" />
+                          )}
+                        </Button>
+                      </div>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -214,7 +316,25 @@ const VideoDetailsFormSectionSuspense = ({ videoId }: Props) => {
                 disabled={isPending}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <div className="flex items-center gap-x-2">
+                      <span>Description</span>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        type="button"
+                        className="rounded-full size-6 cursor-pointer"
+                        onClick={() =>
+                          generateDescription.mutate({ id: videoId })
+                        }
+                        disabled={isPending || !video.muxTrackId}
+                      >
+                        {generateDescription.isPending ? (
+                          <Loader2 className="animate-spin size-3" />
+                        ) : (
+                          <Sparkles className="size-3" />
+                        )}
+                      </Button>
+                    </div>
                     <FormControl>
                       <Textarea
                         {...field}
@@ -302,7 +422,7 @@ const VideoDetailsFormSectionSuspense = ({ videoId }: Props) => {
                 )}
               />
             </div>
-            <div className="flex flex-col gap-y-8 lg:col-span-2 mb-5">
+            <div className="flex flex-col gap-y-8 lg:col-span-2">
               <div className="flex flex-col gap-4 bg-muted rounded-xl overflow-hidden h-fit">
                 <div className="aspect-video overflow-hidden relative">
                   <VideoPlayer
