@@ -1,4 +1,5 @@
 import { createdAt, nano, updatedAt } from "@/services/drizzle/schema/common";
+import { videoReactions } from "@/services/drizzle/schema/videoReactions";
 import { videos } from "@/services/drizzle/schema/videos";
 import { videoViews } from "@/services/drizzle/schema/videoViews";
 import { relations } from "drizzle-orm";
@@ -20,4 +21,5 @@ export const users = pgTable(
 export const userRelations = relations(users, ({ many }) => ({
   videos: many(videos),
   videoViews: many(videoViews),
+  videoReactions: many(videoReactions),
 }));

@@ -44,7 +44,9 @@ const VideoSectionSkeleton = () => {
               <TableHead>Date</TableHead>
               <TableHead className="text-right">Views</TableHead>
               <TableHead className="text-right">Comments</TableHead>
-              <TableHead className="text-right pr-6">Likes</TableHead>
+              <TableHead className="text-right pr-6">
+                Likes (vs. Dislikes)
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="animate-pulse">
@@ -97,6 +99,10 @@ const VideosSectionSuspense = () => {
   );
 
   const router = useRouter();
+  const reactionRatio = (likes: number, dislikes: number) => {
+    const total = likes + dislikes;
+    return `${(likes / total) * 100}%`;
+  };
 
   const formatNumber = (num: number) => {
     return Intl.NumberFormat("en-US", {
@@ -116,7 +122,9 @@ const VideosSectionSuspense = () => {
               <TableHead>Date</TableHead>
               <TableHead className="text-right">Views</TableHead>
               <TableHead className="text-right">Comments</TableHead>
-              <TableHead className="text-right pr-6">Likes</TableHead>
+              <TableHead className="text-right pr-6">
+                Likes (vs. Dislikes)
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -174,7 +182,9 @@ const VideosSectionSuspense = () => {
                     {formatNumber(video.views)}
                   </TableCell>
                   <TableCell className="text-right">Comments</TableCell>
-                  <TableCell className="text-right pr-6">Likes</TableCell>
+                  <TableCell className="text-right pr-6">
+                    {reactionRatio(video.likes, video.dislikes)}
+                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>

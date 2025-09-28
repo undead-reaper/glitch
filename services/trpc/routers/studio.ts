@@ -1,4 +1,5 @@
 import { db } from "@/services/drizzle";
+import { videoReactions } from "@/services/drizzle/schema/videoReactions";
 import { videos } from "@/services/drizzle/schema/videos";
 import { videoViews } from "@/services/drizzle/schema/videoViews";
 import { createTRPCRouter, protectedProcedure } from "@/services/trpc/init";
@@ -47,6 +48,20 @@ export const studioRouter = createTRPCRouter({
         .select({
           ...getTableColumns(videos),
           views: db.$count(videoViews, eq(videoViews.videoId, videos.id)),
+          likes: db.$count(
+            videoReactions,
+            and(
+              eq(videoReactions.videoId, videos.id),
+              eq(videoReactions.type, "like")
+            )
+          ),
+          dislikes: db.$count(
+            videoReactions,
+            and(
+              eq(videoReactions.videoId, videos.id),
+              eq(videoReactions.type, "dislike")
+            )
+          ),
         })
         .from(videos)
         .where(

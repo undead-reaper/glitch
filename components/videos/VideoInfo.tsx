@@ -16,7 +16,12 @@ const VideoInfo = ({ video }: Props) => {
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <VideoOwnerInfo user={video.user} videoId={video.id} />
         <div className="flex overflow-x-auto min-w-[calc(50%-0.375rem)] md:min-w-min justify-start md:justify-end sm:overflow-visible sm:pb-0 sm:mb-0 mr-2 pb-2 -mb-2 gap-2">
-          <VideoReactions />
+          <VideoReactions
+            videoId={video.id}
+            likes={video.likes}
+            dislikes={video.dislikes}
+            viewerReaction={video.viewerReaction}
+          />
           <VideoShareButton videoId={video.id} />
           <VideoMenu videoId={video.id} variant={"secondary"} />
         </div>

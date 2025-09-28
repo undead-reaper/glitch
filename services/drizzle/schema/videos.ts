@@ -1,6 +1,7 @@
 import { categories } from "@/services/drizzle/schema/categories";
 import { createdAt, nano, updatedAt } from "@/services/drizzle/schema/common";
 import { users } from "@/services/drizzle/schema/users";
+import { videoReactions } from "@/services/drizzle/schema/videoReactions";
 import { videoViews } from "@/services/drizzle/schema/videoViews";
 import { relations } from "drizzle-orm";
 import { integer, pgEnum, pgTable, text } from "drizzle-orm/pg-core";
@@ -56,4 +57,5 @@ export const videoRelations = relations(videos, ({ one, many }) => ({
     references: [categories.id],
   }),
   views: many(videoViews),
+  reactions: many(videoReactions),
 }));
