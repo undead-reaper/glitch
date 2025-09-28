@@ -1,11 +1,16 @@
 import { clientEnv } from "@/env/env.client";
 import { db } from "@/services/drizzle";
+import { users } from "@/services/drizzle/schema/users";
 import { videos, videoUpdateSchema } from "@/services/drizzle/schema/videos";
 import { mux } from "@/services/mux";
-import { createTRPCRouter, protectedProcedure } from "@/services/trpc/init";
+import {
+  baseProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from "@/services/trpc/init";
 import { qstash } from "@/services/upstash/qstash";
 import { TRPCError } from "@trpc/server";
-import { and, eq } from "drizzle-orm";
+import { and, eq, getTableColumns } from "drizzle-orm";
 import { UTApi } from "uploadthing/server";
 import z from "zod";
 
@@ -169,5 +174,29 @@ export const videosRouter = createTRPCRouter({
         body: { userId, videoId: input.id },
       });
       return { workflowRunId };
+    }),
+
+  getOne: baseProcedure
+    .input(z.object({ id: z.nanoid() }))
+    .query(async ({ input }) => {
+      const [existingVideo] = await db
+        .select({
+          ...getTableColumns(videos),
+          user: {
+            ...getTableColumns(users),
+          },
+        })
+        .from(videos)
+        .where(eq(videos.id, input.id))
+        .innerJoin(users, eq(videos.userId, users.id));
+
+      if (!existingVideo) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Video not found.",
+        });
+      }
+
+      return existingVideo;
     }),
 });

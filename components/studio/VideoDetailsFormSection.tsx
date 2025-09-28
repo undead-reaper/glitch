@@ -437,7 +437,7 @@ const VideoDetailsFormSectionSuspense = ({ videoId }: Props) => {
                         <p className="text-muted-foreground text-xs">
                           Video Link
                         </p>
-                        <Link href={fullUrl as Route}>
+                        <Link href={fullUrl as Route} target="_blank">
                           <p className="break-words line-clamp-2 text-sm text-primary">
                             {fullUrl}
                           </p>
