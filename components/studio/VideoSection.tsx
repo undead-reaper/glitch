@@ -98,6 +98,12 @@ const VideosSectionSuspense = () => {
 
   const router = useRouter();
 
+  const formatNumber = (num: number) => {
+    return Intl.NumberFormat("en-US", {
+      notation: "compact",
+    }).format(num);
+  };
+
   return (
     <div>
       <div className="border-y">
@@ -134,8 +140,8 @@ const VideosSectionSuspense = () => {
                           duration={video.duration}
                         />
                       </div>
-                      <div className="flex flex-col overflow-hidden">
-                        <span className="text-sm line-clamp-1 truncate w-[31.875rem]">
+                      <div className="flex flex-col overflow-hidden w-[31.875rem]">
+                        <span className="text-sm line-clamp-1 truncate">
                           {video.title}
                         </span>
                         <span className="text-xs text-muted-foreground line-clamp-1">
@@ -164,7 +170,9 @@ const VideosSectionSuspense = () => {
                   <TableCell className="text-sm truncate">
                     {format(new Date(video.createdAt), "dd MMM, yyyy")}
                   </TableCell>
-                  <TableCell className="text-right">Views</TableCell>
+                  <TableCell className="text-right">
+                    {formatNumber(video.views)}
+                  </TableCell>
                   <TableCell className="text-right">Comments</TableCell>
                   <TableCell className="text-right pr-6">Likes</TableCell>
                 </TableRow>

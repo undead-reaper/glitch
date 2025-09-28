@@ -1,6 +1,7 @@
 import { categories } from "@/services/drizzle/schema/categories";
 import { createdAt, nano, updatedAt } from "@/services/drizzle/schema/common";
 import { users } from "@/services/drizzle/schema/users";
+import { videoViews } from "@/services/drizzle/schema/videoViews";
 import { relations } from "drizzle-orm";
 import { integer, pgEnum, pgTable, text } from "drizzle-orm/pg-core";
 import {
@@ -45,7 +46,7 @@ export const videoInsertSchema = createInsertSchema(videos);
 export const videoUpdateSchema = createUpdateSchema(videos);
 export const videoSelectSchema = createSelectSchema(videos);
 
-export const videoRelations = relations(videos, ({ one }) => ({
+export const videoRelations = relations(videos, ({ one, many }) => ({
   user: one(users, {
     fields: [videos.userId],
     references: [users.id],
@@ -54,4 +55,5 @@ export const videoRelations = relations(videos, ({ one }) => ({
     fields: [videos.categoryId],
     references: [categories.id],
   }),
+  views: many(videoViews),
 }));

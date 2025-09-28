@@ -5,6 +5,7 @@ import VideoInfo from "@/components/videos/VideoInfo";
 import VideoPlayer from "@/components/videos/VideoPlayer";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/services/trpc/client";
+import { useAuth } from "@clerk/nextjs";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
@@ -24,6 +25,19 @@ const VideoViewer = ({ videoId }: Props) => {
 
 const VideoViewerSuspense = ({ videoId }: Props) => {
   const [video] = trpc.videos.getOne.useSuspenseQuery({ id: videoId });
+  const utils = trpc.useUtils();
+  const createView = trpc.videoViews.create.useMutation({
+    onSuccess: () => {
+      utils.videos.getOne.invalidate({ id: videoId });
+    },
+  });
+  const { isSignedIn } = useAuth();
+
+  const handlePlay = () => {
+    if (isSignedIn) {
+      createView.mutate({ videoId });
+    }
+  };
 
   return (
     <>
@@ -35,7 +49,7 @@ const VideoViewerSuspense = ({ videoId }: Props) => {
       >
         <VideoPlayer
           autoPlay
-          onPlay={() => {}}
+          onPlay={handlePlay}
           playbackId={video.muxPlaybackId}
           thumbnailUrl={video.thumbnailUrl}
         />

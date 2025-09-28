@@ -26,15 +26,16 @@ const VideoDescription = ({ description, views, date }: Props) => {
 
   const compactDate = formatDistanceToNowStrict(date, { addSuffix: true });
 
-  const expandedDate = format(date, "d MMM yyyy");
+  const expandedDate = format(date, "MMM d, yyyy");
 
   return (
     <div className="bg-muted/50 rounded-xl p-3">
-      <div className="flex gap-2 text-sm mb-2">
-        <span className="font-medium">
-          {isExpanded ? expandedViews : compactViews} views
+      <div className="flex gap-3 text-sm mb-2">
+        <span className="font-medium [word-spacing:0.1rem]">
+          {isExpanded ? expandedViews : compactViews}{" "}
+          {views === 1 ? "view" : "views"}
         </span>
-        <span className="font-medium">
+        <span className="font-medium [word-spacing:0.1rem]">
           {isExpanded ? expandedDate : compactDate}
         </span>
       </div>

@@ -2,6 +2,7 @@ import { clientEnv } from "@/env/env.client";
 import { db } from "@/services/drizzle";
 import { users } from "@/services/drizzle/schema/users";
 import { videos, videoUpdateSchema } from "@/services/drizzle/schema/videos";
+import { videoViews } from "@/services/drizzle/schema/videoViews";
 import { mux } from "@/services/mux";
 import {
   baseProcedure,
@@ -185,6 +186,7 @@ export const videosRouter = createTRPCRouter({
           user: {
             ...getTableColumns(users),
           },
+          views: db.$count(videoViews, eq(videoViews.videoId, videos.id)),
         })
         .from(videos)
         .where(eq(videos.id, input.id))

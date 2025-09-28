@@ -23,7 +23,7 @@ const VideoInfo = ({ video }: Props) => {
       </div>
       <VideoDescription
         description={video.description}
-        views={92686}
+        views={video.views}
         date={video.createdAt}
       />
     </div>
