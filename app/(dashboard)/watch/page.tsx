@@ -1,3 +1,4 @@
+import { DEFAULT_COMMENTS_LIMIT } from "@/constants/dashboard";
 import { HydrateClient, trpc } from "@/services/trpc/server";
 import VideoView from "@/views/dashboard/VideoView";
 
@@ -10,6 +11,10 @@ type Props = Readonly<{
 const VideoPage = async ({ searchParams }: Props) => {
   const { v: videoId } = await searchParams;
   void trpc.videos.getOne.prefetch({ id: videoId });
+  void trpc.comments.getMany.prefetchInfinite({
+    videoId,
+    limit: DEFAULT_COMMENTS_LIMIT,
+  });
 
   return (
     <HydrateClient>

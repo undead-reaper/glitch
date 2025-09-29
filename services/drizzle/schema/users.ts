@@ -1,3 +1,4 @@
+import { comments } from "@/services/drizzle/schema/comments";
 import { createdAt, nano, updatedAt } from "@/services/drizzle/schema/common";
 import { subscriptions } from "@/services/drizzle/schema/subscriptions";
 import { videoReactions } from "@/services/drizzle/schema/videoReactions";
@@ -25,4 +26,5 @@ export const userRelations = relations(users, ({ many }) => ({
   videoReactions: many(videoReactions),
   subscriptions: many(subscriptions),
   subscribers: many(subscriptions),
+  comments: many(comments),
 }));

@@ -251,7 +251,7 @@ const VideoDetailsFormSectionSuspense = ({ videoId }: Props) => {
               >
                 Save
               </Button>
-              <DropdownMenu>
+              <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                   <Button
                     disabled={isPending}
@@ -362,7 +362,7 @@ const VideoDetailsFormSectionSuspense = ({ videoId }: Props) => {
                           src={video.thumbnailUrl || THUMBNAIL_PLACEHOLDER}
                           className="object-cover bg-muted"
                         />
-                        <DropdownMenu>
+                        <DropdownMenu modal={false}>
                           <DropdownMenuTrigger asChild>
                             <Button
                               type="button"

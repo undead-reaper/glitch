@@ -13,10 +13,10 @@ const StudioSidebarHeader = () => {
   if (!user) {
     return (
       <SidebarHeader className="flex items-center justify-center pb-4 animate-pulse">
-        <Skeleton className="size-[7rem] rounded-full bg-muted-foreground" />
+        <Skeleton className="size-[7rem] rounded-full bg-muted" />
         <div className="flex flex-col items-center mt-2 gap-y-2">
-          <Skeleton className="h-4 w-[5rem] bg-muted-foreground" />
-          <Skeleton className="h-3 w-[6.25rem] bg-muted-foreground" />
+          <Skeleton className="h-4 w-[5rem] bg-muted" />
+          <Skeleton className="h-3 w-[6.25rem] bg-muted" />
         </div>
       </SidebarHeader>
     );

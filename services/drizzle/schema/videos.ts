@@ -1,4 +1,5 @@
 import { categories } from "@/services/drizzle/schema/categories";
+import { comments } from "@/services/drizzle/schema/comments";
 import { createdAt, nano, updatedAt } from "@/services/drizzle/schema/common";
 import { users } from "@/services/drizzle/schema/users";
 import { videoReactions } from "@/services/drizzle/schema/videoReactions";
@@ -58,4 +59,5 @@ export const videoRelations = relations(videos, ({ one, many }) => ({
   }),
   views: many(videoViews),
   reactions: many(videoReactions),
+  comments: many(comments),
 }));

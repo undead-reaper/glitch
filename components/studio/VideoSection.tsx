@@ -181,7 +181,7 @@ const VideosSectionSuspense = () => {
                   <TableCell className="text-right">
                     {formatNumber(video.views)}
                   </TableCell>
-                  <TableCell className="text-right">Comments</TableCell>
+                  <TableCell className="text-right">{video.comments}</TableCell>
                   <TableCell className="text-right pr-6">
                     {reactionRatio(video.likes, video.dislikes)}
                   </TableCell>

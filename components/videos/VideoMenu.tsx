@@ -24,7 +24,7 @@ const VideoMenu = ({ videoId, variant, onRemove }: Props) => {
           <span>Save</span>
         </Button>
       </div>
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger className="hidden md:flex" asChild>
           <Button
             variant={variant}

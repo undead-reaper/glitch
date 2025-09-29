@@ -1,4 +1,5 @@
 import { db } from "@/services/drizzle";
+import { comments } from "@/services/drizzle/schema/comments";
 import { videoReactions } from "@/services/drizzle/schema/videoReactions";
 import { videos } from "@/services/drizzle/schema/videos";
 import { videoViews } from "@/services/drizzle/schema/videoViews";
@@ -28,6 +29,7 @@ export const studioRouter = createTRPCRouter({
 
       return video;
     }),
+
   getMany: protectedProcedure
     .input(
       z.object({
@@ -62,6 +64,7 @@ export const studioRouter = createTRPCRouter({
               eq(videoReactions.type, "dislike")
             )
           ),
+          comments: db.$count(comments, eq(comments.videoId, videos.id)),
         })
         .from(videos)
         .where(

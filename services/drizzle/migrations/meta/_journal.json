@@ -78,6 +78,13 @@
       "when": 1759094727977,
       "tag": "0010_slim_sauron",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1759132451452,
+      "tag": "0011_good_zaladane",
+      "breakpoints": true
     }
   ]
 }
