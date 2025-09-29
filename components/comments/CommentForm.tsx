@@ -20,9 +20,18 @@ import z from "zod";
 type Props = Readonly<{
   videoId: string;
   onSuccess?: () => void;
+  onCancel?: () => void;
+  variant?: "reply" | "default";
+  parentId?: string;
 }>;
 
-const CommentForm = ({ videoId, onSuccess }: Props) => {
+const CommentForm = ({
+  videoId,
+  onSuccess,
+  onCancel,
+  variant = "default",
+  parentId,
+}: Props) => {
   const { user } = useUser();
   const { resolvedTheme } = useTheme();
   const clerk = useClerk();
@@ -34,6 +43,7 @@ const CommentForm = ({ videoId, onSuccess }: Props) => {
   const create = trpc.comments.create.useMutation({
     onSuccess: () => {
       utils.comments.getMany.invalidate({ videoId });
+      utils.comments.getMany.invalidate({ videoId, parentId });
       form.reset();
       toast.success("Comment Posted!", {
         description: "Your comment has been added successfully.",
@@ -54,6 +64,7 @@ const CommentForm = ({ videoId, onSuccess }: Props) => {
   const form = useForm<CommentFormData>({
     resolver: zodResolver(commentFormSchema),
     defaultValues: {
+      parentId,
       videoId,
       content: "",
     },
@@ -62,6 +73,11 @@ const CommentForm = ({ videoId, onSuccess }: Props) => {
   const handleSubmit = (values: CommentFormData) => {
     if (values.content === "") return;
     create.mutate(values);
+  };
+
+  const handleCancel = () => {
+    form.reset();
+    onCancel?.();
   };
 
   const placeholderName = "Anonymous";
@@ -88,7 +104,11 @@ const CommentForm = ({ videoId, onSuccess }: Props) => {
                 <FormControl>
                   <Textarea
                     {...field}
-                    placeholder="Add a comment..."
+                    placeholder={
+                      variant === "default"
+                        ? "Add a comment..."
+                        : "Add a reply..."
+                    }
                     className="resize-none bg-transparent overflow-hidden min-h-0"
                   />
                 </FormControl>
@@ -97,13 +117,25 @@ const CommentForm = ({ videoId, onSuccess }: Props) => {
             )}
           />
           <div className="justify-end gap-2 mt-2 flex">
+            {onCancel && (
+              <Button
+                size="sm"
+                variant="ghost"
+                type="button"
+                className="cursor-pointer"
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
+            )}
             <Button
               disabled={create.isPending || !form.formState.isDirty}
               type="submit"
+              variant={variant === "reply" ? "secondary" : "default"}
               className="cursor-pointer"
               size="sm"
             >
-              Comment
+              {variant === "reply" ? "Reply" : "Comment"}
             </Button>
           </div>
         </div>

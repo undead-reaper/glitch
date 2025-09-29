@@ -46,7 +46,7 @@ const VideoCommentsSuspense = ({ videoId }: Props) => {
 
   return (
     <div className="mt-6">
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-5">
         <h1 className="text-xl font-bold">
           {count} <span>{count > 1 ? "Comments" : "Comment"}</span>
         </h1>

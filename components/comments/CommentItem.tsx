@@ -1,3 +1,5 @@
+import CommentForm from "@/components/comments/CommentForm";
+import CommentReplies from "@/components/comments/CommentReplies";
 import { Button } from "@/components/ui/button";
 import UserAvatar from "@/components/UserAvatar";
 import { cn } from "@/lib/utils";
@@ -5,16 +7,24 @@ import { trpc } from "@/services/trpc/client";
 import { CommentsGetManyOutput } from "@/types/comments/CommentsGetManyOutput";
 import { useAuth, useClerk } from "@clerk/nextjs";
 import { formatDistanceToNowStrict } from "date-fns";
-import { ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  ThumbsDown,
+  ThumbsUp,
+  Trash2,
+} from "lucide-react";
 import { Route } from "next";
 import Link from "next/link";
+import { useState } from "react";
 import { toast } from "sonner";
 
 type Props = Readonly<{
   comment: CommentsGetManyOutput["items"][number];
+  variant?: "reply" | "default";
 }>;
 
-const CommentItem = ({ comment }: Props) => {
+const CommentItem = ({ comment, variant = "default" }: Props) => {
   const utils = trpc.useUtils();
   const clerk = useClerk();
 
@@ -36,6 +46,10 @@ const CommentItem = ({ comment }: Props) => {
     },
   });
   const { userId } = useAuth();
+
+  const [isReplyOpen, setIsReplyOpen] = useState(false);
+  const [isRepliesOpen, setIsRepliesOpen] = useState(false);
+
   const isOwner = userId === comment.user.clerkId;
   const react = trpc.commentReactions.react.useMutation({
     onSuccess: () => {
@@ -57,7 +71,7 @@ const CommentItem = ({ comment }: Props) => {
       <div className="flex gap-4">
         <Link href={`/users/${comment.userId}` as Route}>
           <UserAvatar
-            size="lg"
+            size={variant === "reply" ? "sm" : "lg"}
             imageUrl={comment.user.imageUrl}
             name={comment.user.name}
           />
@@ -116,6 +130,16 @@ const CommentItem = ({ comment }: Props) => {
                   {comment.dislikes}
                 </span>
               </div>
+              {variant === "default" && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 cursor-pointer hover:bg-muted! hover:text-foreground/70"
+                  onClick={() => setIsReplyOpen(true)}
+                >
+                  Reply
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -131,6 +155,40 @@ const CommentItem = ({ comment }: Props) => {
           </Button>
         )}
       </div>
+      {isReplyOpen && variant === "default" && (
+        <div className="mt-4 pl-14">
+          <CommentForm
+            variant="reply"
+            parentId={comment.id}
+            onCancel={() => setIsReplyOpen(false)}
+            videoId={comment.videoId}
+            onSuccess={() => {
+              setIsReplyOpen(false);
+              setIsRepliesOpen(true);
+            }}
+          />
+        </div>
+      )}
+      {comment.replyCount > 0 && variant === "default" && (
+        <div className="pl-14 mt-2">
+          <Button
+            onClick={() => setIsRepliesOpen((current) => !current)}
+            size="sm"
+            variant="ghost"
+            className="rounded-full text-primary cursor-pointer hover:bg-primary/10! hover:text-primary"
+          >
+            {isRepliesOpen ? (
+              <ChevronUp className="size-4 mr-2" />
+            ) : (
+              <ChevronDown className="size-4 mr-2" />
+            )}
+            <span>{comment.replyCount} replies</span>
+          </Button>
+        </div>
+      )}
+      {comment.replyCount > 0 && variant === "default" && isRepliesOpen && (
+        <CommentReplies parentId={comment.id} videoId={comment.videoId} />
+      )}
     </div>
   );
 };
