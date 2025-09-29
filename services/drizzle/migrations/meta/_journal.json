@@ -71,6 +71,13 @@
       "when": 1759071931113,
       "tag": "0009_loud_screwball",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1759094727977,
+      "tag": "0010_slim_sauron",
+      "breakpoints": true
     }
   ]
 }

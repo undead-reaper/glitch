@@ -1,8 +1,10 @@
 "use client";
 
 import VideoBanner from "@/components/videos/VideoBanner";
-import VideoInfo from "@/components/videos/VideoInfo";
-import VideoPlayer from "@/components/videos/VideoPlayer";
+import VideoInfo, { VideoInfoSkeleton } from "@/components/videos/VideoInfo";
+import VideoPlayer, {
+  VideoPlayerSkeleton,
+} from "@/components/videos/VideoPlayer";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/services/trpc/client";
 import { useAuth } from "@clerk/nextjs";
@@ -15,11 +17,20 @@ type Props = Readonly<{
 
 const VideoViewer = ({ videoId }: Props) => {
   return (
-    <Suspense fallback={<div>Loading video...</div>}>
+    <Suspense fallback={<VideoViewerSkeleton />}>
       <ErrorBoundary fallback={<div>Error loading video</div>}>
         <VideoViewerSuspense videoId={videoId} />
       </ErrorBoundary>
     </Suspense>
+  );
+};
+
+const VideoViewerSkeleton = () => {
+  return (
+    <div className="animate-pulse">
+      <VideoPlayerSkeleton />
+      <VideoInfoSkeleton />
+    </div>
   );
 };
 

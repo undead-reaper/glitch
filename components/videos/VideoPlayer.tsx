@@ -8,6 +8,10 @@ type Props = Readonly<{
   onPlay?: () => void;
 }>;
 
+export const VideoPlayerSkeleton = () => {
+  return <div className="aspect-video bg-muted rounded-xl" />;
+};
+
 const VideoPlayer = ({ playbackId, thumbnailUrl, autoPlay, onPlay }: Props) => {
   if (!playbackId) return null;
 

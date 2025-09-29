@@ -20,12 +20,12 @@ const SubscribeButton = ({
   return (
     <Button
       size={size}
-      variant={isSubscribed ? "default" : "secondary"}
+      variant={isSubscribed ? "secondary" : "default"}
       className={cn("rounded-full", className)}
       onClick={onClick}
       disabled={disabled}
     >
-      {isSubscribed ? "Subscribed" : "Subscribe"}
+      {isSubscribed ? "Unsubscribe" : "Subscribe"}
     </Button>
   );
 };
