@@ -184,34 +184,49 @@ export const videosRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const { clerkUserId } = ctx;
 
-      let userId;
+      let userId: string | undefined;
 
-      const [user] = await db
-        .select({
-          id: users.id,
-        })
-        .from(users)
-        .where(inArray(users.clerkId, clerkUserId ? [clerkUserId] : []));
+      if (clerkUserId) {
+        const [user] = await db
+          .select({
+            id: users.id,
+          })
+          .from(users)
+          .where(eq(users.clerkId, clerkUserId));
 
-      if (user) {
-        userId = user.id;
+        if (user) {
+          userId = user.id;
+        }
       }
 
       const viewerReactions = db.$with("viewer_reactions").as(
-        db
-          .select({
-            videoId: videoReactions.videoId,
-            type: videoReactions.type,
-          })
-          .from(videoReactions)
-          .where(inArray(videoReactions.userId, userId ? [userId] : []))
+        userId
+          ? db
+              .select({
+                videoId: videoReactions.videoId,
+                type: videoReactions.type,
+              })
+              .from(videoReactions)
+              .where(eq(videoReactions.userId, userId))
+          : db
+              .select({
+                videoId: videoReactions.videoId,
+                type: videoReactions.type,
+              })
+              .from(videoReactions)
+              .where(eq(videoReactions.userId, "")) // This will never match
       );
 
       const viewerSubscriptions = db.$with("viewer_subscriptions").as(
-        db
-          .select()
-          .from(subscriptions)
-          .where(inArray(subscriptions.viewerId, userId ? [userId] : []))
+        userId
+          ? db
+              .select()
+              .from(subscriptions)
+              .where(eq(subscriptions.viewerId, userId))
+          : db
+              .select()
+              .from(subscriptions)
+              .where(eq(subscriptions.viewerId, "")) // This will never match
       );
 
       const [existingVideo] = await db

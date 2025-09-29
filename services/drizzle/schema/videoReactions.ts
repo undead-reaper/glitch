@@ -33,11 +33,11 @@ export const videoReactions = pgTable(
 ).enableRLS();
 
 export const videoReactionsRelations = relations(videoReactions, ({ one }) => ({
-  users: one(users, {
+  user: one(users, {
     fields: [videoReactions.userId],
     references: [users.id],
   }),
-  videos: one(videos, {
+  video: one(videos, {
     fields: [videoReactions.videoId],
     references: [videos.id],
   }),

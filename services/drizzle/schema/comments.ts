@@ -1,3 +1,4 @@
+import { commentReactions } from "@/services/drizzle/schema/commentReactions";
 import { createdAt, nano, updatedAt } from "@/services/drizzle/schema/common";
 import { users } from "@/services/drizzle/schema/users";
 import { videos } from "@/services/drizzle/schema/videos";
@@ -22,7 +23,7 @@ export const comments = pgTable("comments", {
   updatedAt,
 }).enableRLS();
 
-export const commentsRelations = relations(comments, ({ one }) => ({
+export const commentsRelations = relations(comments, ({ one, many }) => ({
   user: one(users, {
     fields: [comments.userId],
     references: [users.id],
@@ -31,6 +32,7 @@ export const commentsRelations = relations(comments, ({ one }) => ({
     fields: [comments.videoId],
     references: [videos.id],
   }),
+  reactions: many(commentReactions),
 }));
 
 export const commentSelectSchema = createSelectSchema(comments);
