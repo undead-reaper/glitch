@@ -46,7 +46,7 @@ interface VideoCardProps extends VariantProps<typeof videoCardVariants> {
 }
 
 export const VideoCardSkeleton = ({
-  size,
+  size = "default",
 }: VariantProps<typeof videoCardVariants>) => {
   return (
     <div className={videoCardVariants({ size })}>
@@ -81,7 +81,11 @@ export const VideoCardSkeleton = ({
   );
 };
 
-export const VideoCard = ({ data, onRemove, size }: VideoCardProps) => {
+export const VideoCard = ({
+  data,
+  onRemove,
+  size = "default",
+}: VideoCardProps) => {
   const compactViews = useMemo(() => {
     return Intl.NumberFormat("en-US", { notation: "compact" }).format(
       data.views

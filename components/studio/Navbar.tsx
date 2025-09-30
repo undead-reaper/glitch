@@ -1,5 +1,5 @@
-import StudioUploadButton from "@/app/(studio)/studio/UploadButton";
 import AuthButton from "@/components/auth/AuthButton";
+import StudioUploadButton from "@/components/studio/UploadButton";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import Link from "next/link";
 

@@ -5,6 +5,8 @@ import {
 import { HydrateClient, trpc } from "@/services/trpc/server";
 import VideoView from "@/views/dashboard/VideoView";
 
+export const dynamic = "force-dynamic";
+
 type Props = Readonly<{
   searchParams: Promise<{
     v: string;

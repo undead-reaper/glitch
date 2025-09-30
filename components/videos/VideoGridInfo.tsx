@@ -55,7 +55,7 @@ const VideoGridInfo = ({ data, onRemove }: Props) => {
           />
         </Link>
         <Link href={`/watch?v=${data.id}`}>
-          <p className="text-sm text-muted-foreground line-clamp-1">
+          <p className="text-xs text-muted-foreground line-clamp-1">
             {compactViews} views • {compactDate}
           </p>
         </Link>

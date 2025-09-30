@@ -5,6 +5,9 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Search } from "lucide-react";
+import { Route } from "next";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
@@ -15,16 +18,33 @@ const searchSchema = z.object({
 type SearchProps = z.infer<typeof searchSchema>;
 
 const Searchbar = () => {
+  const params = useSearchParams();
+  const currentQuery = params.get("search_query") || "";
+
+  const inputRef = useRef<HTMLInputElement>(null);
   const searchForm = useForm<SearchProps>({
     resolver: zodResolver(searchSchema),
     defaultValues: {
-      query: "",
+      query: currentQuery,
     },
   });
+  const router = useRouter();
+
+  const { reset } = searchForm;
+
+  useEffect(() => {
+    reset({ query: currentQuery });
+  }, [currentQuery, reset]);
 
   const onSubmit = (values: SearchProps) => {
-    if (values.query === "") return;
-    console.log(values);
+    if (inputRef.current) inputRef.current.blur();
+    const newQuery = values.query.trim();
+    if (!newQuery) return;
+
+    const params = new URLSearchParams();
+    params.set("search_query", newQuery);
+
+    router.push(`/results?${params.toString()}` as Route);
   };
 
   return (
@@ -41,10 +61,11 @@ const Searchbar = () => {
               <FormItem>
                 <FormControl>
                   <Input
+                    {...field}
+                    ref={inputRef}
                     accessKey="/"
                     placeholder="Search"
                     className="rounded-l-full md:block hidden"
-                    {...field}
                   />
                 </FormControl>
               </FormItem>
