@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
@@ -6,7 +7,9 @@ import {
 import UserAvatar from "@/components/UserAvatar";
 import { UserInfo } from "@/components/users/UserInfo";
 import VideoMenu from "@/components/videos/VideoMenu";
-import VideoThumbnail from "@/components/videos/VideoThumbnail";
+import VideoThumbnail, {
+  VideoThumbnailSkeleton,
+} from "@/components/videos/VideoThumbnail";
 import { cn } from "@/lib/utils";
 import { VideoGetManyOutput } from "@/types/dashboard";
 import { cva, VariantProps } from "class-variance-authority";
@@ -42,8 +45,40 @@ interface VideoCardProps extends VariantProps<typeof videoCardVariants> {
   onRemove?: () => void;
 }
 
-export const VideoCardSkeleton = () => {
-  return <div>Skeleton</div>;
+export const VideoCardSkeleton = ({
+  size,
+}: VariantProps<typeof videoCardVariants>) => {
+  return (
+    <div className={videoCardVariants({ size })}>
+      <div className={thumbnailVariants({ size })}>
+        <VideoThumbnailSkeleton />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex justify-between gap-x-2">
+          <div className="flex-1 min-w-0">
+            <Skeleton
+              className={cn(
+                "h-5 w-[40%] bg-muted",
+                size === "compact" && "h-4 w-[40%]"
+              )}
+            />
+            {size === "default" && (
+              <>
+                <Skeleton className="h-4 w-[20%] bg-muted mt-1" />
+                <div className="flex items-center gap-2 my-3">
+                  <Skeleton className="size-8 rounded-full bg-muted" />
+                  <Skeleton className="h-4 w-24 bg-muted" />
+                </div>
+              </>
+            )}
+            {size === "compact" && (
+              <Skeleton className="h-4 w-[50%] bg-muted mt-1" />
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export const VideoCard = ({ data, onRemove, size }: VideoCardProps) => {

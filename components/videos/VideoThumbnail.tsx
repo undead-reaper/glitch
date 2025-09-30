@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import { THUMBNAIL_PLACEHOLDER } from "@/constants/globals";
 import { formatDuration } from "@/lib/utils";
 import Image from "next/image";
@@ -8,6 +9,14 @@ type VideoThumbnailProps = Readonly<{
   title: string;
   duration: number;
 }>;
+
+export const VideoThumbnailSkeleton = () => {
+  return (
+    <div className="relative w-full overflow-hidden rounded-xl aspect-video">
+      <Skeleton className="size-full bg-muted" />
+    </div>
+  );
+};
 
 const VideoThumbnail = ({
   imageUrl,

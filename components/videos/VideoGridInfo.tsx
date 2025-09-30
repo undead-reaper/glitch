@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import UserAvatar from "@/components/UserAvatar";
 import { UserInfo } from "@/components/users/UserInfo";
 import VideoMenu from "@/components/videos/VideoMenu";
@@ -11,6 +12,18 @@ type Props = Readonly<{
   data: VideoGetManyOutput["items"][number];
   onRemove?: () => void;
 }>;
+
+export const VideoGridInfoSkeleton = () => {
+  return (
+    <div className="flex gap-3">
+      <Skeleton className="size-10 flex-shrink-0 rounded-full bg-muted" />
+      <div className="min-w-0 flex-1 space-y-2">
+        <Skeleton className="h-5 w-[90%] bg-muted" />
+        <Skeleton className="h-5 w-[70%] bg-muted" />
+      </div>
+    </div>
+  );
+};
 
 const VideoGridInfo = ({ data, onRemove }: Props) => {
   const compactViews = useMemo(() => {

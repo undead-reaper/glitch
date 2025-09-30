@@ -101,6 +101,7 @@ const VideosSectionSuspense = () => {
   const router = useRouter();
   const reactionRatio = (likes: number, dislikes: number) => {
     const total = likes + dislikes;
+    if (total === 0) return "-";
     return `${(likes / total) * 100}%`;
   };
 

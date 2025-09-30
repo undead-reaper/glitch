@@ -13,7 +13,7 @@ import {
 } from "@/services/trpc/init";
 import { qstash } from "@/services/upstash/qstash";
 import { TRPCError } from "@trpc/server";
-import { and, eq, getTableColumns, inArray, isNotNull } from "drizzle-orm";
+import { and, eq, getTableColumns, isNotNull } from "drizzle-orm";
 import { UTApi } from "uploadthing/server";
 import z from "zod";
 
@@ -277,5 +277,65 @@ export const videosRouter = createTRPCRouter({
       }
 
       return existingVideo;
+    }),
+
+  revalidate: protectedProcedure
+    .input(z.object({ id: z.nanoid() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id: userId } = ctx.user;
+
+      const [existingVideo] = await db
+        .select()
+        .from(videos)
+        .where(and(eq(videos.id, input.id), eq(videos.userId, userId)));
+
+      if (!existingVideo) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Video not found or you do not have permission to edit it.",
+        });
+      } else if (!existingVideo.muxUploadId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Video does not have a valid upload ID.",
+        });
+      }
+
+      const directUpload = await mux.video.uploads.retrieve(
+        existingVideo.muxUploadId
+      );
+
+      if (!directUpload || !directUpload.asset_id) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to retrieve upload information from Mux.",
+        });
+      }
+
+      const asset = await mux.video.assets.retrieve(directUpload.asset_id);
+
+      if (!asset) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to retrieve asset information from Mux.",
+        });
+      }
+
+      const duration = asset.duration ? Math.round(asset.duration * 1000) : 0;
+
+      const [updatedVideo] = await db
+        .update(videos)
+        .set({
+          muxStatus: asset.status,
+          muxPlaybackId: asset.playback_ids?.[0]?.id,
+          muxAssetId: asset.id,
+          duration,
+          muxTrackId: asset.tracks?.[1]?.id,
+          muxTrackStatus: asset.tracks?.[1].status,
+        })
+        .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
+        .returning();
+
+      return updatedVideo;
     }),
 });

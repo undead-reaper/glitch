@@ -1,5 +1,9 @@
-import VideoGridInfo from "@/components/videos/VideoGridInfo";
-import VideoThumbnail from "@/components/videos/VideoThumbnail";
+import VideoGridInfo, {
+  VideoGridInfoSkeleton,
+} from "@/components/videos/VideoGridInfo";
+import VideoThumbnail, {
+  VideoThumbnailSkeleton,
+} from "@/components/videos/VideoThumbnail";
 import { VideoGetManyOutput } from "@/types/dashboard";
 import Link from "next/link";
 
@@ -7,6 +11,15 @@ type Props = Readonly<{
   data: VideoGetManyOutput["items"][number];
   onRemove?: () => void;
 }>;
+
+export const VideoGridCardSkeleton = () => {
+  return (
+    <div className="flex flex-col gap-2 w-full">
+      <VideoThumbnailSkeleton />
+      <VideoGridInfoSkeleton />
+    </div>
+  );
+};
 
 const VideoGridCard = ({ data, onRemove }: Props) => {
   return (
