@@ -1,1 +1,2 @@
 export const DEFAULT_COMMENTS_LIMIT = 5;
+export const DEFAULT_SUGGESTIONS_LIMIT = 10;

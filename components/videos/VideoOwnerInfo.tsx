@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import UserAvatar from "@/components/UserAvatar";
 import { UserInfo } from "@/components/users/UserInfo";
 import { useSubscription } from "@/hooks/use-subscription";
-import { VideoGetOneOutput } from "@/types/dashboard/VideoGetOneOutput";
+import { VideoGetOneOutput } from "@/types/dashboard";
 import { useAuth } from "@clerk/nextjs";
 import { Route } from "next";
 import Link from "next/link";

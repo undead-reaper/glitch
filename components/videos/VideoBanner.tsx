@@ -1,4 +1,4 @@
-import { VideoGetOneOutput } from "@/types/dashboard/VideoGetOneOutput";
+import { VideoGetOneOutput } from "@/types/dashboard";
 import { AlertTriangle } from "lucide-react";
 
 type Props = {

@@ -32,8 +32,7 @@ const VideoDescription = ({ description, views, date }: Props) => {
     <div className="bg-muted/50 rounded-xl p-3">
       <div className="flex gap-3 text-sm mb-2">
         <span className="font-medium">
-          {isExpanded ? expandedViews : compactViews}{" "}
-          {views === 1 ? "view" : "views"}
+          {isExpanded ? expandedViews : compactViews} views
         </span>
         <span className="font-medium">
           {isExpanded ? expandedDate : compactDate}
@@ -46,7 +45,7 @@ const VideoDescription = ({ description, views, date }: Props) => {
             !isExpanded && "line-clamp-2"
           )}
         >
-          {description || "No description provided."}
+          {description || "No description available."}
         </p>
         <div
           onClick={() => setIsExpanded((current) => !current)}

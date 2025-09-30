@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/services/trpc/client";
-import { VideoGetOneOutput } from "@/types/dashboard/VideoGetOneOutput";
+import { VideoGetOneOutput } from "@/types/dashboard";
 import { useClerk } from "@clerk/nextjs";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { toast } from "sonner";

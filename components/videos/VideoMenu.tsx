@@ -7,25 +7,35 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 import { Bookmark, MoreVertical, Trash2 } from "lucide-react";
 
 type Props = Readonly<{
   videoId: string;
   variant?: "ghost" | "secondary";
   onRemove?: () => void;
+  responsive?: boolean;
 }>;
 
-const VideoMenu = ({ videoId, variant, onRemove }: Props) => {
+const VideoMenu = ({
+  videoId,
+  variant = "ghost",
+  onRemove,
+  responsive = true,
+}: Props) => {
   return (
     <>
-      <div className="block md:hidden">
+      <div className={cn("block", responsive ? "block md:hidden" : "hidden")}>
         <Button className="rounded-full cursor-pointer" variant="secondary">
           <Bookmark />
           <span>Save</span>
         </Button>
       </div>
       <DropdownMenu modal={false}>
-        <DropdownMenuTrigger className="hidden md:flex" asChild>
+        <DropdownMenuTrigger
+          className={cn(responsive ? "hidden md:flex" : "flex")}
+          asChild
+        >
           <Button
             variant={variant}
             size="icon"

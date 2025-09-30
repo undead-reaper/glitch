@@ -4,7 +4,7 @@ import VideoMenu from "@/components/videos/VideoMenu";
 import VideoOwnerInfo from "@/components/videos/VideoOwnerInfo";
 import VideoReactions from "@/components/videos/VideoReactions";
 import VideoShareButton from "@/components/videos/VideoShareButton";
-import { VideoGetOneOutput } from "@/types/dashboard/VideoGetOneOutput";
+import { VideoGetOneOutput } from "@/types/dashboard";
 
 type Props = {
   video: VideoGetOneOutput;
