@@ -23,7 +23,10 @@ const SidebarMenuList = ({ items, activeUrl }: Props) => {
             tooltip={item.label}
             asChild
           >
-            <Link href={item.href as Route}>
+            <Link
+              href={item.href as Route}
+              target={item.openInNewTab ? "_blank" : "_self"}
+            >
               <item.icon />
               <span>{item.label}</span>
             </Link>

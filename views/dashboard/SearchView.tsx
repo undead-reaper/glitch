@@ -10,7 +10,7 @@ const SearchView = ({ searchParams }: Props) => {
   const { search_query: searchQuery } = searchParams;
 
   return (
-    <div className="max-w-[150rem] mx-auto mb-10 flex flex-col gap-y-6 pt-2.5">
+    <div className="max-w-7xl mx-auto mb-10 flex flex-col gap-y-6 pt-2.5">
       <SearchResults searchQuery={searchQuery} />
     </div>
   );

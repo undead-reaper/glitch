@@ -4,4 +4,5 @@ type SidebarItem = {
   label: string;
   href: string;
   icon: LucideIcon;
+  openInNewTab?: boolean;
 };

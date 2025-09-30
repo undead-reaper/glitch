@@ -64,7 +64,7 @@ export const VideoCardSkeleton = ({
             />
             {size === "default" && (
               <>
-                <Skeleton className="h-4 w-[20%] bg-muted mt-1" />
+                <Skeleton className="h-4 w-[20%] bg-muted mt-2" />
                 <div className="flex items-center gap-2 my-3">
                   <Skeleton className="size-8 rounded-full bg-muted" />
                   <Skeleton className="h-4 w-24 bg-muted" />

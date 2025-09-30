@@ -45,6 +45,7 @@ export const DASHBOARD_SIDEBAR_YOU: SidebarItem[] = [
     label: "Your Videos",
     href: "/studio/content",
     icon: SquareLibrary,
+    openInNewTab: true,
   },
   {
     label: "Watch Later",
