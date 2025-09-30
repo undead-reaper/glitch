@@ -16,7 +16,7 @@ type Props = Readonly<{
 export const VideoGridInfoSkeleton = () => {
   return (
     <div className="flex gap-3">
-      <Skeleton className="size-10 flex-shrink-0 rounded-full bg-muted" />
+      <Skeleton className="size-10 mb-1.5 flex-shrink-0 rounded-full bg-muted" />
       <div className="min-w-0 flex-1 space-y-2">
         <Skeleton className="h-5 w-[90%] bg-muted" />
         <Skeleton className="h-5 w-[70%] bg-muted" />
@@ -43,7 +43,7 @@ const VideoGridInfo = ({ data, onRemove }: Props) => {
       </Link>
       <div className="min-w-0 flex-1">
         <Link href={`/watch?v=${data.id}`}>
-          <h3 className="font-medium line-clamp-1 lg:line-clamp-2 text-base break-words">
+          <h3 className="font-medium mb-1.5 leading-tight line-clamp-2 text-base break-words">
             {data.title}
           </h3>
         </Link>
