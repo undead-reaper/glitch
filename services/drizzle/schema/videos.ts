@@ -1,6 +1,7 @@
 import { categories } from "@/services/drizzle/schema/categories";
 import { comments } from "@/services/drizzle/schema/comments";
 import { createdAt, nano, updatedAt } from "@/services/drizzle/schema/common";
+import { playlistVideos } from "@/services/drizzle/schema/playlistVideos";
 import { users } from "@/services/drizzle/schema/users";
 import { videoReactions } from "@/services/drizzle/schema/videoReactions";
 import { videoViews } from "@/services/drizzle/schema/videoViews";
@@ -60,4 +61,5 @@ export const videoRelations = relations(videos, ({ one, many }) => ({
   views: many(videoViews),
   reactions: many(videoReactions),
   comments: many(comments),
+  playlists: many(playlistVideos),
 }));

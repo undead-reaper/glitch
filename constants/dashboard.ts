@@ -2,3 +2,4 @@ export const DEFAULT_COMMENTS_LIMIT = 5;
 export const DEFAULT_SUGGESTIONS_LIMIT = 10;
 export const DEFAULT_SEARCH_LIMIT = 10;
 export const DEFAULT_VIDEOS_LIMIT = 10;
+export const DEFAULT_PLAYLISTS_LIMIT = 5;

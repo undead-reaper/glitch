@@ -61,7 +61,12 @@ const VideoGridInfo = ({ data, onRemove }: Props) => {
         </Link>
       </div>
       <div className="flex-shrink-0">
-        <VideoMenu videoId={data.id} onRemove={onRemove} responsive={false} />
+        <VideoMenu
+          videoId={data.id}
+          onRemove={onRemove}
+          responsive={false}
+          additionalOptions
+        />
       </div>
     </div>
   );

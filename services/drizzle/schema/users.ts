@@ -1,6 +1,7 @@
 import { commentReactions } from "@/services/drizzle/schema/commentReactions";
 import { comments } from "@/services/drizzle/schema/comments";
 import { createdAt, nano, updatedAt } from "@/services/drizzle/schema/common";
+import { playlists } from "@/services/drizzle/schema/playlists";
 import { subscriptions } from "@/services/drizzle/schema/subscriptions";
 import { videoReactions } from "@/services/drizzle/schema/videoReactions";
 import { videos } from "@/services/drizzle/schema/videos";
@@ -33,4 +34,5 @@ export const userRelations = relations(users, ({ many }) => ({
   }),
   comments: many(comments),
   commentReactions: many(commentReactions),
+  playlists: many(playlists),
 }));

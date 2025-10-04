@@ -6,3 +6,6 @@ export type VideoGetOneOutput =
 
 export type VideoGetManyOutput =
   inferRouterOutputs<AppRouter>["suggestions"]["getMany"];
+
+  export type PlaylistGetUserPlaylistsOutput =
+    inferRouterOutputs<AppRouter>["playlists"]["getUserPlaylists"];

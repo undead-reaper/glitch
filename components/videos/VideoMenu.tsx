@@ -1,5 +1,6 @@
 "use client";
 
+import PlaylistAddModal from "@/components/playlists/PlaylistAddModal";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -7,14 +8,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { clientEnv } from "@/env/env.client";
 import { cn } from "@/lib/utils";
-import { Bookmark, MoreVertical, Trash2 } from "lucide-react";
+import { Bookmark, Clock, MoreVertical, Share, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 type Props = Readonly<{
   videoId: string;
   variant?: "ghost" | "secondary";
   onRemove?: () => void;
   responsive?: boolean;
+  additionalOptions?: boolean;
 }>;
 
 const VideoMenu = ({
@@ -22,9 +27,23 @@ const VideoMenu = ({
   variant = "ghost",
   onRemove,
   responsive = true,
+  additionalOptions = false,
 }: Props) => {
+  const handleShare = () => {
+    const fullUrl = `${clientEnv.NEXT_PUBLIC_BASE_URL}/watch?v=${videoId}`;
+    navigator.clipboard.writeText(fullUrl);
+    toast.success("Video link copied to clipboard", { description: fullUrl });
+  };
+
+  const [openSaveToPlaylistModal, setOpenSaveToPlaylistModal] = useState(false);
+
   return (
     <>
+      <PlaylistAddModal
+        open={openSaveToPlaylistModal}
+        onOpenChange={setOpenSaveToPlaylistModal}
+        videoId={videoId}
+      />
       <div className={cn("block", responsive ? "block md:hidden" : "hidden")}>
         <Button className="rounded-full cursor-pointer" variant="secondary">
           <Bookmark />
@@ -45,10 +64,28 @@ const VideoMenu = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-          <DropdownMenuItem className="cursor-pointer">
+          <DropdownMenuItem
+            onClick={() => setOpenSaveToPlaylistModal(true)}
+            className="cursor-pointer"
+          >
             <Bookmark className="mr-2 size-4" />
-            <span>Save</span>
+            <span>Save to playlist</span>
           </DropdownMenuItem>
+          {additionalOptions && (
+            <>
+              <DropdownMenuItem className="cursor-pointer">
+                <Clock className="mr-2 size-4" />
+                <span>Save to Watch Later</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={handleShare}
+                className="cursor-pointer"
+              >
+                <Share className="mr-2 size-4" />
+                <span>Share</span>
+              </DropdownMenuItem>
+            </>
+          )}
           {onRemove && (
             <DropdownMenuItem className="cursor-pointer">
               <Trash2 className="mr-2 size-4" />

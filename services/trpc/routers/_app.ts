@@ -3,6 +3,7 @@ import { categoriesRouter } from "@/services/trpc/routers/categories";
 import { commentReactionsRouter } from "@/services/trpc/routers/commentReactions";
 import { commentsRouter } from "@/services/trpc/routers/comments";
 import { historyRouter } from "@/services/trpc/routers/history";
+import { playlistsRouter } from "@/services/trpc/routers/playlists";
 import { searchRouter } from "@/services/trpc/routers/search";
 import { studioRouter } from "@/services/trpc/routers/studio";
 import { subscriptionsRouter } from "@/services/trpc/routers/subscriptions";
@@ -23,6 +24,7 @@ export const appRouter = createTRPCRouter({
   suggestions: suggestionsRouter,
   search: searchRouter,
   history: historyRouter,
+  playlists: playlistsRouter,
 });
 
 export type AppRouter = typeof appRouter;
