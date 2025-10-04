@@ -275,7 +275,7 @@ const VideoDetailsFormSectionSuspense = ({ videoId }: Props) => {
               <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    disabled={isPending}
+                    disabled={isPending || !form.formState.isDirty}
                     variant="ghost"
                     size="icon"
                     className="cursor-pointer"
@@ -474,7 +474,7 @@ const VideoDetailsFormSectionSuspense = ({ videoId }: Props) => {
                         size="icon"
                         variant="ghost"
                         type="button"
-                        className="shrink-1"
+                        className="shrink-1 cursor-pointer"
                         onClick={onCopy}
                         disabled={isCopied}
                       >

@@ -16,80 +16,105 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/services/trpc/client";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Globe, Link, Lock } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 
-type Props = {
+type Props = Readonly<{
   open: boolean;
   onOpenChange: (open: boolean) => void;
-};
+  playlistId: string;
+}>;
 
-const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  visibility: z.enum(["private", "public", "unlisted"]),
-});
-
-const PlaylistCreateModal = ({ onOpenChange, open }: Props) => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      visibility: "private",
-    },
+const EditPlaylistModal = ({ onOpenChange, open, playlistId }: Props) => {
+  const [data] = trpc.playlists.getOne.useSuspenseQuery({
+    playlistId,
   });
+
   const utils = trpc.useUtils();
 
-  const create = trpc.playlists.create.useMutation({
+  const update = trpc.playlists.update.useMutation({
     onSuccess: () => {
-      toast.success("Playlist Created Successfully", {
-        description: "You can now add content to your playlist",
+      toast.success("Playlist updated successfully", {
+        description: "Your playlist has been updated.",
       });
-      form.reset();
-      onOpenChange(false);
+      utils.playlists.getOne.invalidate({ playlistId });
       utils.playlists.getUserPlaylists.invalidate();
+      onOpenChange(false);
     },
     onError: (error) => {
-      toast.error("Failed to create playlist", {
+      toast.error("Could not update playlist", {
         description: error.message,
       });
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    create.mutate(values);
+  const schema = z.object({
+    name: z.string(),
+    description: z.string().nullable(),
+    visibility: z.enum(["private", "public", "unlisted"]),
+  });
+
+  const form = useForm<z.infer<typeof schema>>({
+    defaultValues: schema.parse(data),
+  });
+
+  const onSubmit = (values: z.infer<typeof schema>) => {
+    update.mutate({
+      playlistId: playlistId,
+      name: values.name,
+      description: values.description,
+      visibility: values.visibility,
+    });
   };
 
   return (
     <ResponsiveModal
-      title="New Playlist"
       open={open}
       onOpenChange={onOpenChange}
+      title="Edit Playlist"
     >
       <Form {...form}>
         <form
-          className="flex flex-col gap-4 px-5 md:px-0"
           onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-4 px-5 md:px-0"
         >
           <FormField
-            control={form.control}
             name="name"
+            control={form.control}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Choose a name" />
+                  <Input placeholder="Playlist Name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           <FormField
+            name="description"
             control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea
+                    {...field}
+                    value={field.value || ""}
+                    placeholder="Playlist Description"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
             name="visibility"
+            control={form.control}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Visibility</FormLabel>
@@ -114,22 +139,21 @@ const PlaylistCreateModal = ({ onOpenChange, open }: Props) => {
                     </SelectContent>
                   </Select>
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
-          <div className="flex justify-end">
-            <Button
-              disabled={create.isPending || !form.formState.isDirty}
-              type="submit"
-              className="cursor-pointer"
-            >
-              Create
-            </Button>
-          </div>
+          <Button
+            disabled={!form.formState.isDirty || update.isPending}
+            type="submit"
+            className="self-end"
+          >
+            <span>Save Changes</span>
+          </Button>
         </form>
       </Form>
     </ResponsiveModal>
   );
 };
 
-export default PlaylistCreateModal;
+export default EditPlaylistModal;

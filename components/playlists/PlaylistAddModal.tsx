@@ -47,6 +47,10 @@ const PlaylistAddModal = ({ open, onOpenChange, videoId }: Props) => {
       });
       utils.playlists.getUserPlaylists.invalidate();
       utils.playlists.getPlaylistsForVideo.invalidate({ videoId });
+      utils.playlists.getOne.invalidate({ playlistId: variables.playlistId });
+      utils.playlists.getPlaylistVideos.invalidate({
+        playlistId: variables.playlistId,
+      });
     },
     onError: (error) => {
       toast.error("Failed to update playlist", {

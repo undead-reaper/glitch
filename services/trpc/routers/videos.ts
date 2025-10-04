@@ -13,7 +13,16 @@ import {
 } from "@/services/trpc/init";
 import { qstash } from "@/services/upstash/qstash";
 import { TRPCError } from "@trpc/server";
-import { and, desc, eq, getTableColumns, isNotNull, lt, or } from "drizzle-orm";
+import {
+  and,
+  desc,
+  eq,
+  getTableColumns,
+  inArray,
+  isNotNull,
+  lt,
+  or,
+} from "drizzle-orm";
 import { UTApi } from "uploadthing/server";
 import z from "zod";
 
@@ -184,19 +193,15 @@ export const videosRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const { clerkUserId } = ctx;
 
-      let userId: string | undefined;
+      let userId;
 
-      if (clerkUserId) {
-        const [user] = await db
-          .select({
-            id: users.id,
-          })
-          .from(users)
-          .where(eq(users.clerkId, clerkUserId));
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(inArray(users.clerkId, clerkUserId ? [clerkUserId] : []));
 
-        if (user) {
-          userId = user.id;
-        }
+      if (user) {
+        userId = user.id;
       }
 
       const viewerReactions = db.$with("viewer_reactions").as(

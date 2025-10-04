@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { clientEnv } from "@/env/env.client";
 import { cn } from "@/lib/utils";
+import { useClerk } from "@clerk/nextjs";
 import { Bookmark, Clock, MoreVertical, Share, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -29,10 +30,20 @@ const VideoMenu = ({
   responsive = true,
   additionalOptions = false,
 }: Props) => {
+  const clerk = useClerk();
+
   const handleShare = () => {
     const fullUrl = `${clientEnv.NEXT_PUBLIC_BASE_URL}/watch?v=${videoId}`;
     navigator.clipboard.writeText(fullUrl);
     toast.success("Video link copied to clipboard", { description: fullUrl });
+  };
+
+  const handleSaveToPlaylist = () => {
+    if (clerk.isSignedIn) {
+      setOpenSaveToPlaylistModal(true);
+    } else {
+      clerk.openSignIn();
+    }
   };
 
   const [openSaveToPlaylistModal, setOpenSaveToPlaylistModal] = useState(false);
@@ -65,7 +76,7 @@ const VideoMenu = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
           <DropdownMenuItem
-            onClick={() => setOpenSaveToPlaylistModal(true)}
+            onClick={() => handleSaveToPlaylist()}
             className="cursor-pointer"
           >
             <Bookmark className="mr-2 size-4" />
@@ -87,7 +98,7 @@ const VideoMenu = ({
             </>
           )}
           {onRemove && (
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem onClick={onRemove} className="cursor-pointer">
               <Trash2 className="mr-2 size-4" />
               <span>Remove</span>
             </DropdownMenuItem>

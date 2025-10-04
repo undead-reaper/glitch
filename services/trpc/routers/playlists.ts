@@ -5,10 +5,25 @@ import {
 } from "@/services/drizzle/schema/playlists";
 import { playlistVideos } from "@/services/drizzle/schema/playlistVideos";
 import { users } from "@/services/drizzle/schema/users";
+import { videoReactions } from "@/services/drizzle/schema/videoReactions";
 import { videos } from "@/services/drizzle/schema/videos";
-import { createTRPCRouter, protectedProcedure } from "@/services/trpc/init";
+import { videoViews } from "@/services/drizzle/schema/videoViews";
+import {
+  baseProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from "@/services/trpc/init";
 import { TRPCError } from "@trpc/server";
-import { and, desc, eq, getTableColumns, lt, or, sql } from "drizzle-orm";
+import {
+  and,
+  desc,
+  eq,
+  getTableColumns,
+  inArray,
+  lt,
+  or,
+  sql,
+} from "drizzle-orm";
 import z from "zod";
 
 export const playlistsRouter = createTRPCRouter({
@@ -224,17 +239,18 @@ export const playlistsRouter = createTRPCRouter({
           )
         );
 
-      const result = async () => {
+      const result = await (async () => {
         if (!existingPlaylistVideo) {
-          await db
+          const [inserted] = await db
             .insert(playlistVideos)
             .values({
               playlistId,
               videoId,
             })
             .returning();
+          return inserted;
         } else {
-          await db
+          const [deleted] = await db
             .delete(playlistVideos)
             .where(
               and(
@@ -243,9 +259,242 @@ export const playlistsRouter = createTRPCRouter({
               )
             )
             .returning();
+          return deleted;
         }
-      };
+      })();
 
-      return await result();
+      return result;
+    }),
+
+  getPlaylistVideos: baseProcedure
+    .input(
+      z.object({
+        playlistId: z.nanoid(),
+        cursor: z
+          .object({
+            id: z.nanoid(),
+            updatedAt: z.date(),
+          })
+          .nullish(),
+        limit: z.number().min(1).max(20),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { limit, cursor, playlistId } = input;
+      const { clerkUserId } = ctx;
+
+      let userId;
+
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(inArray(users.clerkId, clerkUserId ? [clerkUserId] : []));
+
+      if (user) {
+        userId = user.id;
+      }
+
+      const [existingPlaylist] = await db
+        .select()
+        .from(playlists)
+        .where(eq(playlists.id, playlistId));
+
+      if (!existingPlaylist) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Playlist not found",
+        });
+      }
+
+      const hasAccess =
+        existingPlaylist.visibility === "public" ||
+        (existingPlaylist.visibility === "private" &&
+          userId === existingPlaylist.userId);
+
+      if (!hasAccess) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You don't have permission to access this playlist",
+        });
+      }
+
+      const videosFromPlaylist = db.$with("playlist_videos").as(
+        db
+          .select({
+            videoId: playlistVideos.videoId,
+          })
+          .from(playlistVideos)
+          .where(eq(playlistVideos.playlistId, playlistId))
+      );
+
+      const data = await db
+        .with(videosFromPlaylist)
+        .select({
+          ...getTableColumns(videos),
+          user: users,
+          views: db.$count(videoViews, eq(videoViews.videoId, videos.id)),
+          likes: db.$count(
+            videoReactions,
+            and(
+              eq(videoReactions.videoId, videos.id),
+              eq(videoReactions.type, "like")
+            )
+          ),
+          dislikes: db.$count(
+            videoReactions,
+            and(
+              eq(videoReactions.videoId, videos.id),
+              eq(videoReactions.type, "dislike")
+            )
+          ),
+        })
+        .from(videos)
+        .innerJoin(users, eq(videos.userId, users.id))
+        .innerJoin(
+          videosFromPlaylist,
+          eq(videos.id, videosFromPlaylist.videoId)
+        )
+        .where(
+          and(
+            cursor
+              ? or(
+                  lt(videos.updatedAt, cursor.updatedAt),
+                  and(
+                    eq(videos.updatedAt, cursor.updatedAt),
+                    lt(videos.id, cursor.id)
+                  )
+                )
+              : undefined
+          )
+        )
+        .orderBy(desc(videos.updatedAt), desc(videos.id))
+        // Fetch one extra item to determine if there's a next page
+        .limit(limit + 1);
+
+      const hasMore = data.length > limit;
+      // Remove the last item if there are more items to indicate the presence of a next page
+      const items = hasMore ? data.slice(0, -1) : data;
+      // Get the last item to create the next cursor
+      const lastItem = items[items.length - 1];
+      const nextCursor = hasMore
+        ? {
+            id: lastItem.id,
+            updatedAt: lastItem.updatedAt,
+          }
+        : null;
+
+      return {
+        items,
+        nextCursor,
+      };
+    }),
+
+  getOne: baseProcedure
+    .input(z.object({ playlistId: z.nanoid() }))
+    .query(async ({ ctx, input }) => {
+      const { playlistId } = input;
+      const { clerkUserId } = ctx;
+
+      let userId;
+
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(inArray(users.clerkId, clerkUserId ? [clerkUserId] : []));
+
+      if (user) {
+        userId = user.id;
+      }
+
+      const [existingPlaylist] = await db
+        .select({
+          ...getTableColumns(playlists),
+          user: users,
+          thumbnailUrl: sql<
+            string | null
+          >`(SELECT v.thumbnail_url FROM ${playlistVideos} pv JOIN ${videos} v ON v.id = pv.video_id WHERE pv.playlist_id = ${playlists.id} ORDER BY pv.updated_at DESC LIMIT 1)`,
+          videos: db.$count(
+            playlistVideos,
+            eq(playlists.id, playlistVideos.playlistId)
+          ),
+        })
+        .from(playlists)
+        .innerJoin(users, eq(playlists.userId, users.id))
+        .where(eq(playlists.id, playlistId));
+
+      if (!existingPlaylist) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Playlist not found",
+        });
+      }
+
+      const hasAccess =
+        existingPlaylist.visibility === "public" ||
+        (existingPlaylist.visibility === "private" &&
+          userId === existingPlaylist.userId);
+
+      if (!hasAccess) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You don't have permission to access this playlist",
+        });
+      }
+
+      return existingPlaylist;
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ playlistId: z.nanoid() }))
+    .mutation(async ({ ctx, input }) => {
+      const { playlistId } = input;
+      const { id: userId } = ctx.user;
+
+      const [deletedPlaylist] = await db
+        .delete(playlists)
+        .where(and(eq(playlists.id, playlistId), eq(playlists.userId, userId)))
+        .returning();
+
+      if (!deletedPlaylist) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to delete playlist",
+        });
+      }
+
+      return deletedPlaylist;
+    }),
+
+  update: protectedProcedure
+    .input(
+      z.object({
+        playlistId: z.nanoid(),
+        name: z.string(),
+        description: z.string().nullable(),
+        visibility: z.enum(playlistVisibility.enumValues),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { playlistId, name, description, visibility } = input;
+      const { id: userId } = ctx.user;
+
+      const [updatedPlaylist] = await db
+        .update(playlists)
+        .set({
+          name,
+          description,
+          visibility,
+        })
+        .where(and(eq(playlists.id, playlistId), eq(playlists.userId, userId)))
+        .returning();
+
+      if (!updatedPlaylist) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to update playlist",
+        });
+      }
+
+      return updatedPlaylist;
     }),
 });
