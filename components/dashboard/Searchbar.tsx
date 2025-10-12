@@ -1,13 +1,15 @@
 "use client";
 
+import MobileSearchModal from "@/components/dashboard/MobileSearchModal";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Search } from "lucide-react";
 import { Route } from "next";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
@@ -29,7 +31,9 @@ const Searchbar = () => {
     },
   });
   const router = useRouter();
+  const [openSearchModal, setOpenSearchModal] = useState(false);
 
+  const isMobile = useIsMobile();
   const { reset } = searchForm;
 
   useEffect(() => {
@@ -48,39 +52,47 @@ const Searchbar = () => {
   };
 
   return (
-    <Form {...searchForm}>
-      <form
-        className="flex w-full max-w-sm"
-        onSubmit={searchForm.handleSubmit(onSubmit)}
-      >
-        <div className="relative w-full">
-          <FormField
-            control={searchForm.control}
-            name="query"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    {...field}
-                    ref={inputRef}
-                    accessKey="/"
-                    placeholder="Search"
-                    className="rounded-l-full md:block hidden"
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </div>
-        <Button
-          type="submit"
-          variant="ghost"
-          className="md:rounded-r-full w-12 md:bg-primary hover:bg-primary/80! hover:text-white cursor-pointer"
+    <>
+      <MobileSearchModal
+        open={openSearchModal}
+        setOpen={setOpenSearchModal}
+        currentQuery={currentQuery}
+      />
+      <Form {...searchForm}>
+        <form
+          className="flex w-full max-w-sm"
+          onSubmit={searchForm.handleSubmit(onSubmit)}
         >
-          <Search />
-        </Button>
-      </form>
-    </Form>
+          <div className="relative w-full">
+            <FormField
+              control={searchForm.control}
+              name="query"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      ref={inputRef}
+                      accessKey="/"
+                      placeholder="Search"
+                      className="rounded-l-full md:block hidden"
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+          <Button
+            onClick={isMobile ? () => setOpenSearchModal(true) : undefined}
+            type="submit"
+            variant="ghost"
+            className="md:rounded-r-full w-12 md:bg-primary hover:bg-primary/80! hover:text-white cursor-pointer"
+          >
+            <Search />
+          </Button>
+        </form>
+      </Form>
+    </>
   );
 };
 

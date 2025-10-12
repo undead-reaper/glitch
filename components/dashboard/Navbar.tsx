@@ -9,7 +9,11 @@ const DashboardNavbar = () => {
       <div className="flex items-center gap-2 w-full">
         <div className="flex items-center shrink-0">
           <SidebarTrigger />
-          <Link href="/" className="p-3 text-xl font-semibold tracking-tight">
+          <Link
+            prefetch
+            href="/"
+            className="p-3 text-xl font-semibold tracking-tight"
+          >
             Glitch
           </Link>
         </div>

@@ -30,6 +30,7 @@ const DashboardSidebar = () => {
         <div className="flex ml-1 items-center shrink-0">
           <SidebarTrigger />
           <Link
+            prefetch
             href="/"
             className="px-3 py-1.5 text-xl font-semibold tracking-tight"
           >

@@ -129,7 +129,7 @@ const EditPlaylistModal = ({ onOpenChange, open, playlistId }: Props) => {
                         <span>Public</span>
                       </SelectItem>
                       <SelectItem value="unlisted">
-                        <Link className="inline mr-2" />
+                        <Link prefetch className="inline mr-2" />
                         <span>Unlisted</span>
                       </SelectItem>
                       <SelectItem value="private">

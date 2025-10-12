@@ -101,6 +101,7 @@ export const VideoCard = ({
   return (
     <div className={videoCardVariants({ size })}>
       <Link
+        prefetch
         href={`/watch?v=${data.id}`}
         className={thumbnailVariants({ size })}
       >
@@ -113,7 +114,11 @@ export const VideoCard = ({
       </Link>
       <div className="flex-1 min-w-0">
         <div className="flex justify-between gap-x-2">
-          <Link href={`/watch?v=${data.id}`} className="flex-1 min-w-0">
+          <Link
+            prefetch
+            href={`/watch?v=${data.id}`}
+            className="flex-1 min-w-0"
+          >
             <h3
               className={cn(
                 "font-medium line-clamp-2",

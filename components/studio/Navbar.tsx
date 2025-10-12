@@ -10,6 +10,7 @@ const StudioNavbar = () => {
         <div className="flex items-center shrink-0">
           <SidebarTrigger />
           <Link
+            prefetch
             href="/studio"
             className="p-3 text-xl font-semibold tracking-tight"
           >

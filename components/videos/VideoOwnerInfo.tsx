@@ -23,7 +23,7 @@ const VideoOwnerInfo = ({ user, videoId }: Props) => {
 
   return (
     <div className="flex md:items-center items-start md:justify-start justify-between gap-3 space-x-3">
-      <Link href={`/users/${user.id}` as Route}>
+      <Link prefetch href={`/users/${user.id}` as Route}>
         <div className="flex items-center gap-3 min-w-0">
           <UserAvatar size="lg" imageUrl={user.imageUrl} name={user.name} />
           <div className="flex flex-col min-w-0">
@@ -36,7 +36,9 @@ const VideoOwnerInfo = ({ user, videoId }: Props) => {
       </Link>
       {clerkUserId === user.clerkId ? (
         <Button variant="secondary" className="rounded-full" asChild>
-          <Link href={`/studio/videos/${videoId}` as Route}>Edit Video</Link>
+          <Link prefetch href={`/studio/videos/${videoId}` as Route}>
+            Edit Video
+          </Link>
         </Button>
       ) : (
         <SubscribeButton

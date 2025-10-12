@@ -162,7 +162,7 @@ const VideosSectionSuspense = () => {
                   <TableCell>
                     <div className="flex items-center">
                       {video.visibility === "unlisted" ? (
-                        <Link className="size-4 mr-2" />
+                        <Link prefetch className="size-4 mr-2" />
                       ) : video.visibility === "private" ? (
                         <Lock className="size-4 mr-2" />
                       ) : (

@@ -69,7 +69,7 @@ const CommentItem = ({ comment, variant = "default" }: Props) => {
   return (
     <div>
       <div className="flex gap-4">
-        <Link href={`/users/${comment.userId}` as Route}>
+        <Link prefetch href={`/users/${comment.userId}` as Route}>
           <UserAvatar
             size={variant === "reply" ? "sm" : "lg"}
             imageUrl={comment.user.imageUrl}
@@ -77,7 +77,7 @@ const CommentItem = ({ comment, variant = "default" }: Props) => {
           />
         </Link>
         <div className="flex-1 min-w-0">
-          <Link href={`/users/${comment.userId}` as Route}>
+          <Link prefetch href={`/users/${comment.userId}` as Route}>
             <div className="flex items-center gap-2">
               <span className="font-medium text-sm">{comment.user.name}</span>
               <span className="text-xs text-muted-foreground">

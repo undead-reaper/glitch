@@ -52,7 +52,7 @@ const _CategoriesBar = ({ value, data }: Props) => {
       >
         <CarouselContent className="-ml-3">
           <CarouselItem className="basis-auto">
-            <Link href={"/"}>
+            <Link prefetch href={"/"}>
               <Badge
                 variant={!value ? "default" : "secondary"}
                 className="rounded-lg px-3 py-1 cursor-pointer whitespace-nowrap text-sm"
@@ -63,7 +63,7 @@ const _CategoriesBar = ({ value, data }: Props) => {
           </CarouselItem>
           {data.map((item) => (
             <CarouselItem key={item.value} className="pl-3 basis-auto">
-              <Link href={`?category=${item.value}`}>
+              <Link prefetch href={`?category=${item.value}`}>
                 <Badge
                   variant={value === item.value ? "default" : "secondary"}
                   className="rounded-lg px-3 py-1 cursor-pointer whitespace-nowrap text-sm"

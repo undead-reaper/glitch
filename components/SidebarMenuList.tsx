@@ -34,6 +34,7 @@ const SidebarMenuList = ({ items, activeUrl }: Props) => {
             asChild
           >
             <Link
+              prefetch
               href={item.href as Route}
               target={item.openInNewTab ? "_blank" : "_self"}
             >

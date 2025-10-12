@@ -38,23 +38,23 @@ const VideoGridInfo = ({ data, onRemove }: Props) => {
 
   return (
     <div className="flex gap-3">
-      <Link href={`/users/${data.user.id}` as Route}>
+      <Link prefetch href={`/users/${data.user.id}` as Route}>
         <UserAvatar imageUrl={data.user.imageUrl} name={data.user.name} />
       </Link>
       <div className="min-w-0 flex-1">
-        <Link href={`/watch?v=${data.id}`}>
+        <Link prefetch href={`/watch?v=${data.id}`}>
           <h3 className="font-medium mb-1.5 leading-tight line-clamp-2 text-base break-words">
             {data.title}
           </h3>
         </Link>
-        <Link href={`/users/${data.user.id}` as Route}>
+        <Link prefetch href={`/users/${data.user.id}` as Route}>
           <UserInfo
             size="sm"
             name={data.user.name}
             className="text-muted-foreground"
           />
         </Link>
-        <Link href={`/watch?v=${data.id}`}>
+        <Link prefetch href={`/watch?v=${data.id}`}>
           <p className="text-xs text-muted-foreground line-clamp-1">
             {compactViews} views • {compactDate}
           </p>

@@ -132,7 +132,7 @@ const PlaylistDetailsCardSuspense = ({ playlistId }: Props) => {
                   name={playlist.user.name}
                   size="sm"
                 />
-                <Link href={`/users/${playlist.user.id}` as Route}>
+                <Link prefetch href={`/users/${playlist.user.id}` as Route}>
                   <UserInfo name={playlist.user.name} />
                 </Link>
               </div>

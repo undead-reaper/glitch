@@ -76,6 +76,7 @@ const UserDetails = ({ user }: Props) => {
         </div>
         {userId === user.clerkId ? (
           <Link
+            prefetch
             href="/studio"
             className={cn(
               buttonVariants({ variant: "secondary" }),
@@ -116,6 +117,7 @@ const UserDetails = ({ user }: Props) => {
           </div>
           {userId === user.clerkId ? (
             <Link
+              prefetch
               href="/studio"
               className={cn(
                 buttonVariants({ variant: "secondary" }),
