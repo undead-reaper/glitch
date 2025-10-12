@@ -21,10 +21,11 @@ export const useSubscription = ({
       toast.success("Subscription Added", {
         description: "You have subscribed successfully.",
       });
+      utils.videos.getManySubscribed.invalidate();
+      utils.subscriptions.getMany.invalidate();
+      utils.users.getOne.invalidate({ userId });
       if (fromVideoId) {
         utils.videos.getOne.invalidate({ id: fromVideoId });
-        utils.videos.getManySubscribed.invalidate();
-        utils.users.getOne.invalidate({ userId });
       }
     },
     onError: (error) => {
@@ -43,10 +44,11 @@ export const useSubscription = ({
       toast.success("Subscription Removed", {
         description: "You have unsubscribed successfully.",
       });
+      utils.videos.getManySubscribed.invalidate();
+      utils.subscriptions.getMany.invalidate();
+      utils.users.getOne.invalidate({ userId });
       if (fromVideoId) {
         utils.videos.getOne.invalidate({ id: fromVideoId });
-        utils.videos.getManySubscribed.invalidate();
-        utils.users.getOne.invalidate({ userId });
       }
     },
     onError: (error) => {

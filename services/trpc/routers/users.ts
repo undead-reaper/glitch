@@ -47,7 +47,7 @@ export const usersRouter = createTRPCRouter({
         .from(users)
         .leftJoin(
           viewerSubscriptions,
-          eq(viewerSubscriptions.viewerId, users.id)
+          eq(viewerSubscriptions.creatorId, users.id)
         )
         .where(eq(users.id, input.userId));
 

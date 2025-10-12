@@ -4,8 +4,10 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { SidebarItem } from "@/types/SidebarItem";
+import { LucideIcon } from "lucide-react";
 import { Route } from "next";
 import Link from "next/link";
+import { isValidElement } from "react";
 
 type Props = Readonly<{
   items: SidebarItem[];
@@ -13,6 +15,14 @@ type Props = Readonly<{
 }>;
 
 const SidebarMenuList = ({ items, activeUrl }: Props) => {
+  const renderIcon = (icon: SidebarItem["icon"]) => {
+    if (isValidElement(icon)) {
+      return icon;
+    }
+    const IconComponent = icon as LucideIcon;
+    return <IconComponent />;
+  };
+
   return (
     <SidebarMenu>
       {items.map((item) => (
@@ -27,7 +37,7 @@ const SidebarMenuList = ({ items, activeUrl }: Props) => {
               href={item.href as Route}
               target={item.openInNewTab ? "_blank" : "_self"}
             >
-              <item.icon />
+              {renderIcon(item.icon)}
               <span>{item.label}</span>
             </Link>
           </SidebarMenuButton>

@@ -11,7 +11,7 @@
     "drizzle:migrate": "drizzle-kit migrate",
     "drizzle:push": "drizzle-kit push",
     "drizzle:studio": "drizzle-kit studio",
-    "inngest:dev": "inngest-cli dev --no-discovery",
+    "inngest:dev": "inngest-cli dev",
     "upstash:qstash": "pnpx @upstash/qstash-cli dev --port 2025"
   },
   "dependencies": {

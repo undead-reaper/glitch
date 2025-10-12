@@ -21,7 +21,7 @@ const SubscribeButton = ({
     <Button
       size={size}
       variant={isSubscribed ? "secondary" : "default"}
-      className={cn("rounded-full", className)}
+      className={cn("rounded-full cursor-pointer", className)}
       onClick={onClick}
       disabled={disabled}
     >

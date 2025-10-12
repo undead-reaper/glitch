@@ -1,5 +1,6 @@
 "use client";
 
+import SidebarSubscriptions from "@/components/dashboard/SidebarSubscriptions";
 import SidebarMenuList from "@/components/SidebarMenuList";
 import {
   Sidebar,
@@ -54,6 +55,7 @@ const DashboardSidebar = () => {
             />
           </SidebarGroupContent>
         </SidebarGroup>
+        <SidebarSubscriptions />
       </SidebarContent>
     </Sidebar>
   );
