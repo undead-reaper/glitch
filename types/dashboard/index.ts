@@ -9,3 +9,6 @@ export type VideoGetManyOutput =
 
   export type PlaylistGetUserPlaylistsOutput =
     inferRouterOutputs<AppRouter>["playlists"]["getUserPlaylists"];
+
+  export type UserGetOneOutput =
+    inferRouterOutputs<AppRouter>["users"]["getOne"];

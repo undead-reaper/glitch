@@ -3,7 +3,7 @@ import { HydrateClient, trpc } from "@/services/trpc/server";
 import PlaylistVideosView from "@/views/dashboard/PlaylistVideosView";
 import { redirect } from "next/navigation";
 
-export const dynamic = "force-dynamic";
+;
 
 type Props = Readonly<{
   searchParams: Promise<{

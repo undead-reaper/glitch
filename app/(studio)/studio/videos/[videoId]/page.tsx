@@ -1,7 +1,7 @@
 import { HydrateClient, trpc } from "@/services/trpc/server";
 import VideoDetailsView from "@/views/studio/VideoDetailsView";
 
-export const dynamic = "force-dynamic";
+;
 
 type Props = {
   params: Promise<{ videoId: string }>;

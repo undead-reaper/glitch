@@ -2,7 +2,7 @@ import { DEFAULT_PLAYLISTS_LIMIT } from "@/constants/dashboard";
 import { HydrateClient, trpc } from "@/services/trpc/server";
 import PlaylistView from "@/views/dashboard/PlaylistsView";
 
-export const dynamic = "force-dynamic";
+;
 
 const PlaylistsPage = async () => {
   void trpc.playlists.getUserPlaylists.prefetchInfinite({

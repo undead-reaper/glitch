@@ -1,11 +1,11 @@
 import {
-  DEFAULT_COMMENTS_LIMIT,
-  DEFAULT_SUGGESTIONS_LIMIT,
+    DEFAULT_COMMENTS_LIMIT,
+    DEFAULT_SUGGESTIONS_LIMIT,
 } from "@/constants/dashboard";
 import { HydrateClient, trpc } from "@/services/trpc/server";
 import VideoView from "@/views/dashboard/VideoView";
 
-export const dynamic = "force-dynamic";
+;
 
 type Props = Readonly<{
   searchParams: Promise<{

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { Clapperboard, UserCircle, Video } from "lucide-react";
+import { Clapperboard, User, UserCircle, Video } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 const AuthButton = () => {
@@ -27,6 +27,11 @@ const AuthButton = () => {
                 labelIcon={<Clapperboard className="size-4" />}
               />
             )}
+            <UserButton.Link
+              label="Your Channel"
+              href="/users/current"
+              labelIcon={<User className="size-4" />}
+            />
           </UserButton.MenuItems>
         </UserButton>
       </SignedIn>

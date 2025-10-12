@@ -2,7 +2,7 @@ import { DEFAULT_VIDEOS_LIMIT } from "@/constants/dashboard";
 import { HydrateClient, trpc } from "@/services/trpc/server";
 import HomeView from "@/views/dashboard/HomeView";
 
-export const dynamic = "force-dynamic";
+;
 
 type HomeProps = Readonly<{
   searchParams: Promise<{
