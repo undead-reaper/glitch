@@ -1,5 +1,6 @@
 "use client";
 
+import { ErrorFallback } from "@/components/ErrorFallback";
 import { Separator } from "@/components/ui/separator";
 import UserBanner, { UserBannerSkeleton } from "@/components/users/UserBanner";
 import UserDetails, {
@@ -16,7 +17,7 @@ type Props = Readonly<{
 const UserSection = ({ userId }: Props) => {
   return (
     <Suspense fallback={<UserSectionSkeleton />}>
-      <ErrorBoundary fallback={<div>Error loading user data</div>}>
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
         <UserSectionSuspense userId={userId} />
       </ErrorBoundary>
     </Suspense>

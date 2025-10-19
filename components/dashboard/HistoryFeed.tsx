@@ -1,5 +1,6 @@
 "use client";
 
+import { MinimalErrorFallback } from "@/components/ErrorFallback";
 import InfiniteScroll from "@/components/InfiniteScroll";
 import { VideoCard, VideoCardSkeleton } from "@/components/videos/VideoCard";
 import VideoGridCard, {
@@ -13,7 +14,7 @@ import { ErrorBoundary } from "react-error-boundary";
 const HistoryFeed = () => {
   return (
     <Suspense fallback={<HistoryFeedSkeleton />}>
-      <ErrorBoundary fallback={<div>Something went wrong</div>}>
+      <ErrorBoundary FallbackComponent={MinimalErrorFallback}>
         <HistoryFeedSuspense />
       </ErrorBoundary>
     </Suspense>

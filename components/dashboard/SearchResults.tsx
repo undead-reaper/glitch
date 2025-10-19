@@ -1,5 +1,6 @@
 "use client";
 
+import { MinimalErrorFallback } from "@/components/ErrorFallback";
 import InfiniteScroll from "@/components/InfiniteScroll";
 import { VideoCard, VideoCardSkeleton } from "@/components/videos/VideoCard";
 import VideoGridCard, {
@@ -18,7 +19,7 @@ type Props = Readonly<{
 const SearchResults = ({ searchQuery }: Props) => {
   return (
     <Suspense key={searchQuery} fallback={<SearchResultsSkeleton />}>
-      <ErrorBoundary fallback={<div>Error loading search results</div>}>
+      <ErrorBoundary FallbackComponent={MinimalErrorFallback}>
         <SearchResultsSuspense searchQuery={searchQuery} />
       </ErrorBoundary>
     </Suspense>

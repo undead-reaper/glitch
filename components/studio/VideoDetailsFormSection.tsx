@@ -1,5 +1,6 @@
 "use client";
 
+import { ErrorFallback } from "@/components/ErrorFallback";
 import ThumbnailUploadModal from "@/components/studio/ThumbnailUploadModal";
 import { Button } from "@/components/ui/button";
 import {
@@ -63,7 +64,7 @@ type Props = Readonly<{
 export const VideoDetailsFormSection = ({ videoId }: Props) => {
   return (
     <Suspense fallback={<VideoDetailsFormSectionSkeleton />}>
-      <ErrorBoundary fallback={<p>Failed to load video details</p>}>
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
         <VideoDetailsFormSectionSuspense videoId={videoId} />
       </ErrorBoundary>
     </Suspense>

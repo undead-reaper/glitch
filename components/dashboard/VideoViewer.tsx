@@ -1,5 +1,6 @@
 "use client";
 
+import { ErrorFallback } from "@/components/ErrorFallback";
 import VideoBanner from "@/components/videos/VideoBanner";
 import VideoInfo, { VideoInfoSkeleton } from "@/components/videos/VideoInfo";
 import VideoPlayer, {
@@ -18,7 +19,7 @@ type Props = Readonly<{
 const VideoViewer = ({ videoId }: Props) => {
   return (
     <Suspense fallback={<VideoViewerSkeleton />}>
-      <ErrorBoundary fallback={<div>Error loading video</div>}>
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
         <VideoViewerSuspense videoId={videoId} />
       </ErrorBoundary>
     </Suspense>

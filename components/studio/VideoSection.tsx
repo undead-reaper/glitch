@@ -1,5 +1,6 @@
 "use client";
 
+import { MinimalErrorFallback } from "@/components/ErrorFallback";
 import InfiniteScroll from "@/components/InfiniteScroll";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -24,7 +25,7 @@ import { ErrorBoundary } from "react-error-boundary";
 const VideoSection = () => {
   return (
     <Suspense fallback={<VideoSectionSkeleton />}>
-      <ErrorBoundary fallback={<div>Error loading videos</div>}>
+      <ErrorBoundary FallbackComponent={MinimalErrorFallback}>
         <VideosSectionSuspense />
       </ErrorBoundary>
     </Suspense>
@@ -162,7 +163,7 @@ const VideosSectionSuspense = () => {
                   <TableCell>
                     <div className="flex items-center">
                       {video.visibility === "unlisted" ? (
-                        <Link prefetch className="size-4 mr-2" />
+                        <Link className="size-4 mr-2" />
                       ) : video.visibility === "private" ? (
                         <Lock className="size-4 mr-2" />
                       ) : (

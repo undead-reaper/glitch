@@ -1,5 +1,6 @@
 "use client";
 
+import { MinimalErrorFallback } from "@/components/ErrorFallback";
 import InfiniteScroll from "@/components/InfiniteScroll";
 import SubscriptionItem, {
   SubscriptionItemSkeleton,
@@ -13,7 +14,7 @@ import { toast } from "sonner";
 const SubscriptionsFeed = () => {
   return (
     <Suspense fallback={<SubscriptionsFeedSkeleton />}>
-      <ErrorBoundary fallback={<div>Something went wrong</div>}>
+      <ErrorBoundary FallbackComponent={MinimalErrorFallback}>
         <SubscriptionsFeedSuspense />
       </ErrorBoundary>
     </Suspense>

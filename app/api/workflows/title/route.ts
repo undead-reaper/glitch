@@ -37,33 +37,64 @@ export const { POST } = serve(async (context) => {
 
   const transcript = await context.run("get-transcript", async () => {
     const trackUrl = `https://stream.mux.com/${existingVideo.muxPlaybackId}/text/${existingVideo.muxTrackId}.txt`;
-    const response = await fetch(trackUrl);
-    const text = response.text();
 
-    if (!text) {
-      throw new Error("Transcript not found");
-    } else {
+    try {
+      const response = await fetch(trackUrl);
+
+      if (!response.ok) {
+        throw new WorkflowNonRetryableError(
+          `Failed to fetch transcript: ${response.statusText}`
+        );
+      }
+
+      const text = await response.text();
+
+      if (!text || text.trim().length === 0) {
+        throw new WorkflowNonRetryableError("Transcript is empty");
+      }
+
       return text;
+    } catch (error) {
+      if (error instanceof WorkflowNonRetryableError) {
+        throw error;
+      }
+      throw new WorkflowNonRetryableError(
+        `Error fetching transcript: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     }
   });
 
   const generatedTitle: string | undefined = await context.run(
     "generate-title",
     async () => {
-      const response = await gemini.models.generateContent({
-        model: "gemini-flash-latest",
-        contents: [
-          {
-            role: "model",
-            parts: [{ text: TITLE_SYSTEM_PROMPT }],
-          },
-          {
-            role: "user",
-            parts: [{ text: transcript }],
-          },
-        ],
-      });
-      return response.text;
+      try {
+        const response = await gemini.models.generateContent({
+          model: "gemini-flash-latest",
+          contents: [
+            {
+              role: "model",
+              parts: [{ text: TITLE_SYSTEM_PROMPT }],
+            },
+            {
+              role: "user",
+              parts: [{ text: transcript }],
+            },
+          ],
+        });
+
+        if (!response.text || response.text.trim().length === 0) {
+          console.warn("Gemini returned empty title, keeping original");
+          return existingVideo.title;
+        }
+
+        return response.text;
+      } catch (error) {
+        console.error("Error generating title with Gemini:", error);
+        // Fallback to existing title on error
+        return existingVideo.title;
+      }
     }
   );
 

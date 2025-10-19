@@ -1,5 +1,6 @@
 "use client";
 
+import { MinimalErrorFallback } from "@/components/ErrorFallback";
 import InfiniteScroll from "@/components/InfiniteScroll";
 import PlaylistGridCard, {
   PlaylistGridCardSkeleton,
@@ -12,7 +13,7 @@ import { ErrorBoundary } from "react-error-boundary";
 const PlaylistsFeed = () => {
   return (
     <Suspense fallback={<PlaylistsFeedSkeleton />}>
-      <ErrorBoundary fallback={<div>Failed to load playlists</div>}>
+      <ErrorBoundary FallbackComponent={MinimalErrorFallback}>
         <PlaylistsFeedSuspense />
       </ErrorBoundary>
     </Suspense>

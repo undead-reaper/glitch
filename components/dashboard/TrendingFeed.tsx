@@ -1,5 +1,6 @@
 "use client";
 
+import { MinimalErrorFallback } from "@/components/ErrorFallback";
 import InfiniteScroll from "@/components/InfiniteScroll";
 import VideoGridCard, {
   VideoGridCardSkeleton,
@@ -12,7 +13,7 @@ import { ErrorBoundary } from "react-error-boundary";
 const TrendingFeed = () => {
   return (
     <Suspense fallback={<TrendingFeedSkeleton />}>
-      <ErrorBoundary fallback={<div>Something went wrong</div>}>
+      <ErrorBoundary FallbackComponent={MinimalErrorFallback}>
         <TrendingFeedSuspense />
       </ErrorBoundary>
     </Suspense>

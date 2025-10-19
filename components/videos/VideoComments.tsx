@@ -2,6 +2,7 @@
 
 import CommentForm from "@/components/comments/CommentForm";
 import CommentItem from "@/components/comments/CommentItem";
+import { MinimalErrorFallback } from "@/components/ErrorFallback";
 import InfiniteScroll from "@/components/InfiniteScroll";
 import { DEFAULT_COMMENTS_LIMIT } from "@/constants/dashboard";
 import { trpc } from "@/services/trpc/client";
@@ -16,7 +17,7 @@ type Props = Readonly<{
 export const VideoComments = ({ videoId }: Props) => {
   return (
     <Suspense fallback={<VideoCommentsSkeleton />}>
-      <ErrorBoundary fallback={<div>Failed to load comments.</div>}>
+      <ErrorBoundary FallbackComponent={MinimalErrorFallback}>
         <VideoCommentsSuspense videoId={videoId} />
       </ErrorBoundary>
     </Suspense>

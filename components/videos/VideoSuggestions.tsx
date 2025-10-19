@@ -1,5 +1,6 @@
 "use client";
 
+import { MinimalErrorFallback } from "@/components/ErrorFallback";
 import InfiniteScroll from "@/components/InfiniteScroll";
 import { VideoCard, VideoCardSkeleton } from "@/components/videos/VideoCard";
 import VideoGridCard, {
@@ -18,7 +19,7 @@ type Props = Readonly<{
 const VideoSuggestions = ({ videoId, isManual = false }: Props) => {
   return (
     <Suspense fallback={<VideoSuggestionsSkeleton />}>
-      <ErrorBoundary fallback={<div>Error loading suggestions</div>}>
+      <ErrorBoundary FallbackComponent={MinimalErrorFallback}>
         <VideoSuggestionsSuspense videoId={videoId} isManual={isManual} />
       </ErrorBoundary>
     </Suspense>

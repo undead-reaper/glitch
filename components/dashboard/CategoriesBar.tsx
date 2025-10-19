@@ -1,6 +1,7 @@
 "use client";
 
 import _CategoriesBar from "@/components/dashboard/_CategoriesBar";
+import { MinimalErrorFallback } from "@/components/ErrorFallback";
 import {
   Carousel,
   CarouselContent,
@@ -18,7 +19,7 @@ type Props = Readonly<{
 const CategoriesBar = ({ categoryId }: Props) => {
   return (
     <Suspense fallback={<CategoriesBarSkeleton />}>
-      <ErrorBoundary fallback={<div>Failed to load categories</div>}>
+      <ErrorBoundary FallbackComponent={MinimalErrorFallback}>
         <CategoriesBarSuspense categoryId={categoryId} />
       </ErrorBoundary>
     </Suspense>
