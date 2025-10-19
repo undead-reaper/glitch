@@ -4,6 +4,9 @@ import HistoryView from "@/views/dashboard/HistoryView";
 import { auth } from "@clerk/nextjs/server";
 import { unauthorized } from "next/navigation";
 
+// Force dynamic rendering since this page requires authentication
+export const dynamic = "force-dynamic";
+
 const HistoryPage = async () => {
   const { isAuthenticated } = await auth();
 

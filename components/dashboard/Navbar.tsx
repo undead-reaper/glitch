@@ -1,7 +1,9 @@
 import AuthButton from "@/components/auth/AuthButton";
 import Searchbar from "@/components/dashboard/Searchbar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
+import { Suspense } from "react";
 
 const DashboardNavbar = () => {
   return (
@@ -18,7 +20,13 @@ const DashboardNavbar = () => {
           </Link>
         </div>
         <div className="flex-1 flex justify-end md:justify-center ml-auto md:mr-auto">
-          <Searchbar />
+          <Suspense
+            fallback={
+              <Skeleton className="w-60 h-8 bg-muted rounded-full animate-pulse" />
+            }
+          >
+            <Searchbar />
+          </Suspense>
         </div>
         <div className="flex shrink-0 items-center gap-4">
           <AuthButton />

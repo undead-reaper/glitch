@@ -104,7 +104,7 @@ const PlaylistCreateModal = ({ onOpenChange, open }: Props) => {
                         <span>Public</span>
                       </SelectItem>
                       <SelectItem value="unlisted">
-                        <Link prefetch className="inline mr-2" />
+                        <Link className="inline mr-2" />
                         <span>Unlisted</span>
                       </SelectItem>
                       <SelectItem value="private">

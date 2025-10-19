@@ -1,7 +1,8 @@
 import { HydrateClient, trpc } from "@/services/trpc/server";
 import VideoDetailsView from "@/views/studio/VideoDetailsView";
 
-;
+// Force dynamic rendering since this page requires authentication
+export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ videoId: string }>;

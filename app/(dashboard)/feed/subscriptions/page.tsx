@@ -4,7 +4,8 @@ import SubscribedVideosView from "@/views/dashboard/SubscribedVideosView";
 import { auth } from "@clerk/nextjs/server";
 import { unauthorized } from "next/navigation";
 
-;
+// Force dynamic rendering since this page requires authentication
+export const dynamic = "force-dynamic";
 
 const SubscriptionsPage = async () => {
   const { isAuthenticated } = await auth();
