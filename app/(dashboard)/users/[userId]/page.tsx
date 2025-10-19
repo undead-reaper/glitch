@@ -2,6 +2,8 @@ import { DEFAULT_VIDEOS_LIMIT } from "@/constants/dashboard";
 import { HydrateClient, trpc } from "@/services/trpc/server";
 import UserView from "@/views/dashboard/UserView";
 
+export const dynamic = "force-dynamic";
+
 type Props = Readonly<{
   params: Promise<{
     userId: string;

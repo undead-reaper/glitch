@@ -56,7 +56,11 @@ const VideoMenu = ({
         videoId={videoId}
       />
       <div className={cn("block", responsive ? "block md:hidden" : "hidden")}>
-        <Button className="rounded-full cursor-pointer" variant="secondary">
+        <Button
+          onClick={handleSaveToPlaylist}
+          className="rounded-full cursor-pointer"
+          variant="secondary"
+        >
           <Bookmark />
           <span>Save</span>
         </Button>
