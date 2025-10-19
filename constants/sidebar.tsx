@@ -1,7 +1,6 @@
 import { SidebarItem } from "@/types/SidebarItem";
 import {
   ChartNoAxesCombined,
-  Clock,
   Flame,
   History,
   Home,
@@ -48,13 +47,8 @@ export const DASHBOARD_SIDEBAR_YOU: SidebarItem[] = [
     openInNewTab: true,
   },
   {
-    label: "Watch Later",
-    href: "/playlist?list=WL",
-    icon: Clock,
-  },
-  {
     label: "Liked Videos",
-    href: "/playlist?list=LL",
+    href: "/feed/liked",
     icon: ThumbsUp,
   },
 ];

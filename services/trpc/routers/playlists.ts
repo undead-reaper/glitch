@@ -7,7 +7,6 @@ import { playlistVideos } from "@/services/drizzle/schema/playlistVideos";
 import { users } from "@/services/drizzle/schema/users";
 import { videoReactions } from "@/services/drizzle/schema/videoReactions";
 import { videos } from "@/services/drizzle/schema/videos";
-import { videoViews } from "@/services/drizzle/schema/videoViews";
 import {
   baseProcedure,
   createTRPCRouter,
@@ -332,7 +331,10 @@ export const playlistsRouter = createTRPCRouter({
         .select({
           ...getTableColumns(videos),
           user: users,
-          views: db.$count(videoViews, eq(videoViews.videoId, videos.id)),
+          views: db.$count(
+            videoReactions,
+            eq(videoReactions.videoId, videos.id)
+          ),
           likes: db.$count(
             videoReactions,
             and(
@@ -496,5 +498,100 @@ export const playlistsRouter = createTRPCRouter({
       }
 
       return updatedPlaylist;
+    }),
+
+  getLiked: protectedProcedure
+    .input(
+      z.object({
+        cursor: z
+          .object({
+            id: z.nanoid(),
+            likedAt: z.date(),
+          })
+          .nullish(),
+        limit: z.number().min(1).max(20),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { limit, cursor } = input;
+      const { id: userId } = ctx.user;
+
+      const viewerReactions = db.$with("viewer_reactions").as(
+        db
+          .select({
+            videoId: videoReactions.videoId,
+            likedAt: videoReactions.updatedAt,
+          })
+          .from(videoReactions)
+          .where(
+            and(
+              eq(videoReactions.userId, userId),
+              eq(videoReactions.type, "like")
+            )
+          )
+      );
+
+      const data = await db
+        .with(viewerReactions)
+        .select({
+          ...getTableColumns(videos),
+          user: users,
+          likedAt: viewerReactions.likedAt,
+          views: db.$count(
+            videoReactions,
+            eq(videoReactions.videoId, videos.id)
+          ),
+          likes: db.$count(
+            videoReactions,
+            and(
+              eq(videoReactions.videoId, videos.id),
+              eq(videoReactions.type, "like")
+            )
+          ),
+          dislikes: db.$count(
+            videoReactions,
+            and(
+              eq(videoReactions.videoId, videos.id),
+              eq(videoReactions.type, "dislike")
+            )
+          ),
+        })
+        .from(videos)
+        .innerJoin(users, eq(videos.userId, users.id))
+        .innerJoin(viewerReactions, eq(videos.id, viewerReactions.videoId))
+        .where(
+          and(
+            eq(videos.visibility, "public"),
+            cursor
+              ? or(
+                  lt(viewerReactions.likedAt, cursor.likedAt),
+                  and(
+                    eq(viewerReactions.likedAt, cursor.likedAt),
+                    lt(videos.id, cursor.id)
+                  )
+                )
+              : undefined
+          )
+        )
+        .orderBy(desc(viewerReactions.likedAt), desc(videos.id))
+        // Fetch one extra item to determine if there's a next page
+        .limit(limit + 1);
+
+      const hasMore = data.length > limit;
+      // Remove the last item if there are more items to indicate the presence of a next page
+      const items = hasMore ? data.slice(0, -1) : data;
+      // Get the last item to create the next cursor
+      const lastItem = items[items.length - 1];
+      const nextCursor = hasMore
+        ? {
+            id: lastItem.id,
+            likedAt: lastItem.likedAt,
+          }
+        : null;
+
+      return {
+        items,
+        nextCursor,
+      };
     }),
 });

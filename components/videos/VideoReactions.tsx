@@ -27,6 +27,7 @@ const VideoReactions = ({
   const react = trpc.videoReactions.react.useMutation({
     onSuccess: () => {
       utils.videos.getOne.invalidate({ id: videoId });
+      utils.playlists.getLiked.invalidate();
     },
     onError: (error) => {
       if (error.data?.code === "UNAUTHORIZED") {
