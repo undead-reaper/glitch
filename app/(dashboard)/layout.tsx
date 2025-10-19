@@ -3,8 +3,6 @@ import DashboardSidebar from "@/components/dashboard/Sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ReactNode } from "react";
 
-;
-
 type Props = Readonly<{
   children: ReactNode;
 }>;

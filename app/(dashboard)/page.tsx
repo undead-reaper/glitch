@@ -2,8 +2,6 @@ import { DEFAULT_VIDEOS_LIMIT } from "@/constants/dashboard";
 import { HydrateClient, trpc } from "@/services/trpc/server";
 import HomeView from "@/views/dashboard/HomeView";
 
-;
-
 type HomeProps = Readonly<{
   searchParams: Promise<{
     category?: string;
