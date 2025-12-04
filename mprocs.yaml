@@ -1,0 +1,9 @@
+procs:
+  next:
+    shell: "pnpm run dev"
+  studio:
+    shell: "pnpm run drizzle:studio"
+  inngest:
+    shell: "pnpm run inngest:dev"
+  qstash:
+    shell: "pnpm run upstash:qstash"
